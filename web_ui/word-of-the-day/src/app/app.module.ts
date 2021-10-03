@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { WordComponent } from './word/word.component';
 import { AuthModule } from '@auth0/auth0-angular';
+import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopNavComponent,
-    WordComponent
+    WordComponent,
+    BottomNavComponent
   ],
   imports: [
     BrowserModule,

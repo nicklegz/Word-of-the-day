@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Word } from '../interfaces/Word';
+import { Word } from '../interfaces/word.interface';
 import { WordService } from '../services/word.service';
 
 @Component({

@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable, of } from 'rxjs';
-import { UserWords } from '../interfaces/UserWords';
-import { Word } from '../interfaces/Word';
+import { UserWords } from '../interfaces/userwords.interface';
+import { Word } from '../interfaces/word.interface';
 import { MockUserWords, Words } from '../mockdata/MockData';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WordService {
-  userWords!: Word[];
   word!: Word;
-  nextDate!: any;
+  nextDate!: number;
   user!: UserWords;
+  timeInterval: number = 86400000;
+  availableWords!: Word[];
 
   constructor(public auth: AuthService) { }
 
   public getWord(): Observable<Word> {
 
+    //localStorage.clear();
     var localStoreWord = localStorage.getItem('user');
 
     if(localStoreWord != null){
       this.user! = JSON.parse(localStoreWord)!;
-
-      //look into this bug
-      //this.nextDate = this.user!.LastUpdated.setHours(this.user!.LastUpdated.getHours() + 24);
+      this.nextDate = this.user!.LastUpdated + this.timeInterval;
       this.word! = this.user!.WordOfTheDay;
     }
 
@@ -38,17 +38,15 @@ export class WordService {
   private getNewWord() {
     const curUsername = "nicktest"
     const currentUser = MockUserWords.find(x => x.Username === curUsername);
-    this.nextDate = currentUser!.LastUpdated.setHours(currentUser!.LastUpdated.getHours() + 24);
+    this.nextDate = currentUser!.LastUpdated + this.timeInterval;
 
     if(Date.now() > this.nextDate){
-      this.userWords = Words.filter(word => !currentUser!.PreviouslyUsedWords.includes(word));
-      this.word = this.userWords[Math.floor(Math.random() * this.userWords.length)];
 
+      this.getAvailableWords(currentUser!);
+      this.word = this.availableWords[Math.floor(Math.random() * this.availableWords.length)];
       currentUser!.PreviouslyUsedWords.push(this.word);
       currentUser!.WordOfTheDay = this.word;
-
-      const dateNow = Date.now()
-      currentUser!.LastUpdated = new Date(dateNow);
+      currentUser!.LastUpdated = Date.now();
     }
 
     else{
@@ -56,5 +54,13 @@ export class WordService {
     }
 
     localStorage.setItem('user', JSON.stringify(currentUser!));
+  }
+
+  private getAvailableWords(currentUser: UserWords){
+    return this.availableWords = Words.filter(words =>{
+      return currentUser?.PreviouslyUsedWords.some(userWords => {
+        return words.Id != userWords.Id && words.WordText != userWords.WordText && words.Definition != userWords.Definition
+      })
+    });
   }
 }
