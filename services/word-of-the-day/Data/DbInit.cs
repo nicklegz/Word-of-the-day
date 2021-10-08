@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using word_of_the_day.Models;
 
 namespace word_of_the_day.Models
 {
@@ -12,27 +10,42 @@ namespace word_of_the_day.Models
         {
             context.Database.EnsureCreated();
 
-            if(context.Words.Any())
+            if(context.Words.Any() && context.Users.Any())
             {
                 return;
             }
 
-            Word happy = new Word()
+            var happy = new Word
             {
-                Id = 1,
+                WordId = 1,
                 WordText = "Happy",
                 Definition = "To be happy"
             };
 
+            var words = new List<Word>
+            {
+                happy,
 
-            var users = new User[]
+                new Word
+                {
+                    WordId = 2, 
+                    WordText = "Sad",
+                    Definition = "I am sad"
+                }
+            };
+
+            foreach(Word w in words)
+            {
+                context.Words.Add(w);
+            }
+
+            var users = new List<User>()
             {
                 new User
-                { 
+                {
                     UserId = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130004"),
                     Username = "nicktest", 
-                    PreviouslyUsedWords = new List<int>(){1,2,3},
-                    WordOfTheDay = happy,
+                    WordOfTheDayId = 1,
                     LastUpdated = DateTime.Now
                 }
             };
@@ -42,21 +55,19 @@ namespace word_of_the_day.Models
                 context.Users.Add(u);
             }
 
-            var words = new Word[]
+            var prevWords = new List<PreviouslyUsedWord>()
             {
-                happy,
-
-                new Word()
+                new PreviouslyUsedWord
                 {
-                    Id = 2, 
-                    WordText = "Sad",
-                    Definition = "I am sad"
+                    Id = 1,
+                    WordId = 1,
+                    UserId = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130004")
                 }
             };
 
-            foreach(Word w in words)
+            foreach(PreviouslyUsedWord pW in prevWords)
             {
-                context.Words.Add(w);
+                context.PreviouslyUsedWords.Add(pW);
             }
 
             context.SaveChanges();

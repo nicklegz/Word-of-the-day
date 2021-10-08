@@ -13,6 +13,7 @@ namespace word_of_the_day.Controllers
     [Route("api/[controller]")]
     public class WordController : ControllerBase
     {
+        private static readonly Random random = new Random();
         private readonly WordOfTheDayContext _context;
 
         public WordController(WordOfTheDayContext context)
@@ -35,31 +36,47 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        private IEnumerable<Word> GetWords()
-        {
-            List<Word> words = new List<Word>();
-            words.Add(new Word {Id = 1, WordText = "Happy", Definition = "This is a definition"});
-            words.Add(new Word {Id = 2, WordText = "Sad", Definition = "This is a definition"});
-            words.Add(new Word {Id = 3, WordText = "Hungry", Definition = "This is a definition"});
-
-            return words;
-        }
-
-        /*
-        [HttpGet("/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadFileDTO))]
+        [HttpGet("/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Word))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ReadFileDTO>> GetFile(Guid id)
+        public async Task<ActionResult<Word>> GetNewWord(Guid userId)
         {
-            var file =  await _extensions.GetFile(id);
+            User user =  await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
 
-            if(file == null)
+            if(user == null)
             {
                 return NotFound();
             }
 
-            return Ok(file);
+            var prevWords = await _context.PreviouslyUsedWords.Where(x => x.UserId == userId).ToListAsync();
+
+            var query = from word in _context.Set<Word>()
+                        from p in _context.Set<PreviouslyUsedWord>().Where(p => word.WordId == p.WordId).DefaultIfEmpty()
+                        where p == null
+                        select word;
+
+            var result = await query.ToListAsync();
+
+
+            //var availableWords = await _context.Words.FromSqlRaw("select \"Word\".\"WordId\",\"Word\".\"Definition\",\"Word\".\"WordText\" from \"Word\" left join \"PreviouslyUsedWord\" on \"Word\".\"WordId\" = \"PreviouslyUsedWord\".\"WordId\" where \"PreviouslyUsedWord\".\"WordId\" is null;").ToListAsync();
+            // if(availableWords.Count() < 1)
+            // {
+            //     availableWords = await _context.Words.ToListAsync();
+            // }    
+            
+            // int index = random.Next(0, availableWords.Count());
+            // Word newWord = availableWords[index];
+
+            // if(newWord == null)
+            // {
+            //     return NoContent();
+            // }
+
+            // return Ok(newWord);
+            return Ok();
         }
+
+        /*
 
         // POST /user
         [HttpPost]
