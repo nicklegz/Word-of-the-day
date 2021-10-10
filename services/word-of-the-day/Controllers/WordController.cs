@@ -39,41 +39,33 @@ namespace word_of_the_day.Controllers
         [HttpGet("/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Word))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Word>> GetNewWord(Guid userId)
+        public async Task<ActionResult<Word>> GetNewWord(string username)
         {
-            User user =  await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            User user =  await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
 
             if(user == null)
-            {
                 return NotFound();
-            }
 
-            var prevWords = await _context.PreviouslyUsedWords.Where(x => x.UserId == userId).ToListAsync();
+            TimeSpan diff = DateTime.Now - user.LastUpdated;
+            if(diff.Hours < 23)
+                return _context.Words.FirstOrDefault(x => x.WordId == user.WordOfTheDayId);
 
             var query = from word in _context.Set<Word>()
-                        from p in _context.Set<PreviouslyUsedWord>().Where(p => word.WordId == p.WordId).DefaultIfEmpty()
+                        from p in _context.Set<PreviouslyUsedWord>().Where(
+                            p => word.WordId == p.WordId && 
+                            p.UserId == user.UserId).DefaultIfEmpty()
                         where p == null
                         select word;
 
-            var result = await query.ToListAsync();
+            var availableWords = await query.ToListAsync();
 
+            int index = random.Next(0, availableWords.Count());
+            Word newWord = availableWords[index];
 
-            //var availableWords = await _context.Words.FromSqlRaw("select \"Word\".\"WordId\",\"Word\".\"Definition\",\"Word\".\"WordText\" from \"Word\" left join \"PreviouslyUsedWord\" on \"Word\".\"WordId\" = \"PreviouslyUsedWord\".\"WordId\" where \"PreviouslyUsedWord\".\"WordId\" is null;").ToListAsync();
-            // if(availableWords.Count() < 1)
-            // {
-            //     availableWords = await _context.Words.ToListAsync();
-            // }    
-            
-            // int index = random.Next(0, availableWords.Count());
-            // Word newWord = availableWords[index];
+            if(newWord == null)
+                return NoContent();
 
-            // if(newWord == null)
-            // {
-            //     return NoContent();
-            // }
-
-            // return Ok(newWord);
-            return Ok();
+            return Ok(newWord);
         }
 
         /*
