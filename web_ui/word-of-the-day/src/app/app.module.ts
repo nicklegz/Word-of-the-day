@@ -7,6 +7,7 @@ import { TopNavComponent } from './top-nav/top-nav.component';
 import { WordComponent } from './word/word.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     AuthModule.forRoot({
       domain: 'nicklegz.us.auth0.com',
       clientId: 'SZjwwZGVwjWDK5giyHeeFMTVCDRIqrFI'}),

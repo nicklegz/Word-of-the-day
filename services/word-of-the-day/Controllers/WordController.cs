@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using word_of_the_day.Models;
 namespace word_of_the_day.Controllers
 {
     [ApiController]
+    [EnableCors]
     [Route("api/[controller]")]
     public class WordController : ControllerBase
     {
@@ -36,7 +38,7 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        [HttpGet("/{userId}")]
+        [HttpGet("/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Word))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Word>> GetNewWord(string username)

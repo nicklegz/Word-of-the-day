@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { UserWords } from '../interfaces/userwords.interface';
 import { Word } from '../interfaces/word.interface';
-import { MockUserWords, Words } from '../mockdata/MockData';
+import { Words } from '../mockdata/MockData';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators'; 
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,12 @@ export class WordService {
   user!: UserWords;
   timeInterval: number = 86400000;
   availableWords!: Word[];
+  words?: Array<any>;
 
-  constructor(public auth: AuthService) { }
+  private headers?: HttpHeaders;
+
+  constructor(public auth: AuthService, private http: HttpClient) { 
+  }
 
   public getWord(): Observable<Word> {
 
@@ -35,32 +41,32 @@ export class WordService {
     return of(this.word!);
   }
 
-  private getNewWord() {
-    const curUsername = "nicktest"
-    const currentUser = MockUserWords.find(x => x.Username === curUsername);
-    this.nextDate = currentUser!.LastUpdated + this.timeInterval;
+  public getNewWord() {
 
-    if(Date.now() > this.nextDate){
+    const url = "http://localhost:5000/api/word";
+    let reqHeaders = new HttpHeaders().set('Accept', 'application/json');
+    return this.http.get<any>(url, {headers: reqHeaders}).subscribe((data) => {
+      console.log(data);
+    });
 
-      this.getAvailableWords(currentUser!);
-      this.word = this.availableWords[Math.floor(Math.random() * this.availableWords.length)];
-      currentUser!.PreviouslyUsedWords.push(this.word);
-      currentUser!.WordOfTheDay = this.word;
-      currentUser!.LastUpdated = Date.now();
+    // localStorage.setItem('user', JSON.stringify(currentUser!));
+  }
+
+  private errorHandler(error: HttpErrorResponse){
+    if(error.error instanceof ErrorEvent){
+      console.error('An error occured', error.error.message);
+
     }
 
     else{
-      this.word! = currentUser!.WordOfTheDay;
+      console.error(
+        error.status + ' ' + error.error
+      );
     }
 
-    localStorage.setItem('user', JSON.stringify(currentUser!));
+    return throwError(
+      "An error occured."
+    );
+    }
   }
 
-  private getAvailableWords(currentUser: UserWords){
-    return this.availableWords = Words.filter(words =>{
-      return currentUser?.PreviouslyUsedWords.some(userWords => {
-        return words.Id != userWords.Id && words.WordText != userWords.WordText && words.Definition != userWords.Definition
-      })
-    });
-  }
-}

@@ -27,6 +27,14 @@ namespace word_of_the_day
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+
             services.AddDbContext<WordOfTheDayContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DevConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -44,9 +52,11 @@ namespace word_of_the_day
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "word_of_the_day v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
