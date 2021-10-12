@@ -12,7 +12,7 @@ namespace word_of_the_day.Controllers
 {
     [ApiController]
     [EnableCors]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class WordController : ControllerBase
     {
         private static readonly Random random = new Random();
@@ -23,8 +23,7 @@ namespace word_of_the_day.Controllers
             _context = context;
         }
 
-        //GET /words
-        [HttpGet]
+        [HttpGet("[controller]")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Word>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Word>>> GetListWords()
@@ -38,7 +37,7 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        [HttpGet("/{username}")]
+        [HttpGet("[controller]/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Word))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Word>> GetNewWord(string username)

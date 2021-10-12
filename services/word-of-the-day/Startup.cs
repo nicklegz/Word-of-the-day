@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using word_of_the_day.Models;
+using Newtonsoft.Json.Serialization;
 
 namespace word_of_the_day
 {
@@ -36,7 +37,14 @@ namespace word_of_the_day
             });
 
             services.AddDbContext<WordOfTheDayContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DevConnection")));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                var resolver = options.SerializerSettings.ContractResolver;
+                if (resolver != null)
+                    (resolver as DefaultContractResolver).NamingStrategy = null;
+
+            });
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "word_of_the_day", Version = "v1" });
