@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Word } from '../interfaces/word.interface';
-import { WordService } from '../services/word.service';
+import { CustomAuthService } from 'src/app/services/auth.service';
+import { Word } from '../../interfaces/word.interface';
+import { WordService } from '../../services/word.service';
 
 @Component({
   selector: 'app-word',
@@ -11,8 +12,9 @@ import { WordService } from '../services/word.service';
 export class WordComponent implements OnInit {
 
   wordObject!: Observable<Word>;
+  profile: any;
 
-  constructor(private wordService: WordService) { }
+  constructor(private wordService: WordService, private auth0: CustomAuthService) { }
 
   ngOnInit(): void {
     this.wordObject = this.wordService.getWord();
