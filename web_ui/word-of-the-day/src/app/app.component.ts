@@ -14,7 +14,6 @@ interface Authenticated{
 })
 export class AppComponent implements OnInit{
   title = 'word-of-the-day';
-  authenticated!: any;
 
   constructor(public auth0: CustomAuthService, private http: HttpClient, public router: Router){}
 
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit{
   }
 
   getAuthenticated(){
-    this.http.get<Authenticated>("http://localhost:5000/api/auth/user").subscribe(data =>{
+    this.http.get<Authenticated>("https://localhost:5001/api/auth/user").subscribe(data =>{
       if(data.isAuthenticated == false){
         window.location.href = "https://localhost:5001/api/auth/login";
       }

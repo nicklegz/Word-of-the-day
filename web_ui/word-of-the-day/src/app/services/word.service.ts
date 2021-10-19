@@ -24,7 +24,7 @@ export class WordService {
   constructor(public auth: AuthService, private http: HttpClient) {
   }
 
-  public getWord(): Observable<Word> {
+  public getWord(): Observable<any> {
     //localStorage.clear();
     var localStoreWord = localStorage.getItem('user');
 
@@ -34,20 +34,20 @@ export class WordService {
     //   this.word! = this.user!.WordOfTheDay;
     // }
 
-    if(localStoreWord == null || Date.now() > this.nextDate){
+    // if(localStoreWord == null || Date.now() > this.nextDate){
       return this.getNewWord();
-    }
+    // }
 
-    return of(this.word!);
+    // return of(this.word!);
   }
 
 
 
 
 
-  public getNewWord() : Observable<Word>{
+  public getNewWord() : Observable<any>{
 
-    return this.http.get<Word>(baseApiUrl + '/word');
+    return this.http.get<any>(baseApiUrl + '');
 
     // localStorage.setItem('user', JSON.stringify(currentUser!));
   }

@@ -31,10 +31,6 @@ namespace word_of_the_day
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.ConfigureApplicationCookie(options => {
-                options.Cookie.SameSite = SameSiteMode.None;
-            });
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -64,8 +60,8 @@ namespace word_of_the_day
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer("Bearer", c =>
                 {
-                c.Authority = $"https://{Configuration["Auth0:Domain"]}";
-                c.TokenValidationParameters = new TokenValidationParameters
+                    c.Authority = $"https://{Configuration["Auth0:Domain"]}";
+                    c.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
                     ValidAudiences = Configuration["Auth0:Audience"].Split(";"),
@@ -167,7 +163,7 @@ namespace word_of_the_day
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "word_of_the_day v1"));
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
