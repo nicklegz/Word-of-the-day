@@ -24,7 +24,7 @@ export class WordService {
   constructor(public auth: AuthService, private http: HttpClient) {
   }
 
-  public getWord(): Observable<any> {
+  public getWord(): Observable<Word> {
     //localStorage.clear();
     var localStoreWord = localStorage.getItem('user');
 
@@ -45,9 +45,9 @@ export class WordService {
 
 
 
-  public getNewWord() : Observable<any>{
+  public getNewWord() : Observable<Word>{
 
-    return this.http.get<any>(baseApiUrl + '');
+    return this.http.get<Word>(baseApiUrl + '');
 
     // localStorage.setItem('user', JSON.stringify(currentUser!));
   }

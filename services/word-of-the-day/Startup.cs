@@ -169,6 +169,8 @@ namespace word_of_the_day
 
             app.UseCors("CorsPolicy");
 
+            app.UseCookiePolicy();
+
             app.UseAuthentication();
 
             app.UseAuthorization();

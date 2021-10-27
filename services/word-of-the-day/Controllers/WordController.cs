@@ -69,6 +69,8 @@ namespace word_of_the_day.Controllers
         }
 
         [HttpGet("[controller]/{username}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]    
+        [RequiredScope("read:word")]
         public async Task<ActionResult<Word>> GetNewWord(string username)
         {
             User user =  await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
@@ -89,11 +91,12 @@ namespace word_of_the_day.Controllers
 
             var availableWords = await query.ToListAsync();
 
-            int index = random.Next(0, availableWords.Count());
-            Word newWord = availableWords[index];
-
-            if(newWord == null)
+            int availableWordsCount = availableWords.Count();
+            if(availableWordsCount < 1)
                 return NoContent();
+
+            int index = random.Next(0, availableWordsCount);
+            Word newWord = availableWords[index];
 
             return Ok(newWord);
         }
