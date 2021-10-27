@@ -1,31 +1,62 @@
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Web.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using word_of_the_day.Models;
 
 namespace word_of_the_day.Controllers
 {
     [ApiController]
-    [EnableCors]
     [Route("api/")]
     public class WordController : ControllerBase
     {
         private static readonly Random random = new Random();
         private readonly WordOfTheDayContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly Uri _apiEndpoint;
 
-        public WordController(WordOfTheDayContext context)
+        public WordController(WordOfTheDayContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
+            _httpClientFactory = httpClientFactory;  
+
+            if(configuration["WordApiEndpoint"] == null)
+                throw new ArgumentNullException("The Word Api Endpoint is missing from the configuration");
+
+            _apiEndpoint = new Uri(configuration["WordApiEndpoint"], UriKind.Absolute);
             _context = context;
         }
 
+        [HttpGet]
+        public async Task Get()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("Auth0", "access_token");
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(_apiEndpoint, "api/word"));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            await response.Content.CopyToAsync(HttpContext.Response.Body);
+
+        }
+
         [HttpGet("[controller]")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Word>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(AuthenticationSchemes = "Bearer")]    
+        [RequiredScope("read:word")]
         public async Task<ActionResult<IEnumerable<Word>>> GetListWords()
         {
             var words = await _context.Words.ToListAsync();
@@ -38,8 +69,8 @@ namespace word_of_the_day.Controllers
         }
 
         [HttpGet("[controller]/{username}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Word))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(AuthenticationSchemes = "Bearer")]    
+        [RequiredScope("read:word")]
         public async Task<ActionResult<Word>> GetNewWord(string username)
         {
             User user =  await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
@@ -60,32 +91,14 @@ namespace word_of_the_day.Controllers
 
             var availableWords = await query.ToListAsync();
 
-            int index = random.Next(0, availableWords.Count());
-            Word newWord = availableWords[index];
-
-            if(newWord == null)
+            int availableWordsCount = availableWords.Count();
+            if(availableWordsCount < 1)
                 return NoContent();
+
+            int index = random.Next(0, availableWordsCount);
+            Word newWord = availableWords[index];
 
             return Ok(newWord);
         }
-
-        /*
-
-        // POST /user
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<ReadFileDTO>> CreateFile(CreateFileDTO fileDTO)
-        {
-            File file = new()
-            {
-                UserId = fileDTO.UserId,
-                Name = fileDTO.Name,
-                Path = ""
-            };
-
-            var newFile = await _extensions.CreateFile(file);
-
-            return CreatedAtAction(nameof(GetFile), new { id = file.Id }, newFile);
-        }*/
     }
 }
