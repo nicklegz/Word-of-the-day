@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CustomAuthService } from 'src/app/services/auth.service';
 import { Word } from '../../interfaces/word.interface';
 import { WordService } from '../../services/word.service';
 
@@ -14,9 +13,9 @@ export class WordComponent implements OnInit {
   wordObject!: Observable<Word>;
   profile: any;
 
-  constructor(private wordService: WordService, private auth0: CustomAuthService) { }
+  constructor(private wordService: WordService) { }
 
   ngOnInit(): void {
-    this.wordObject = this.wordService.getWord();
+    this.wordObject = this.wordService.getWordOfTheDay();
   }
 }

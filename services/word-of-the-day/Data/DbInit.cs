@@ -43,16 +43,16 @@ namespace word_of_the_day.Models
             {
                 new User
                 {
-                    UserId = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130002"),
-                    Username = "nicktest", 
+                    Id = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130002"),
+                    UserId = "17927udiud2981",
                     WordOfTheDayId = 1,
                     LastUpdated = DateTime.Now
                 },
 
                 new User
                 {
-                    UserId = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130001"),
-                    Username = "amandatest", 
+                    Id = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130001"),
+                    UserId = "2797ehkwh293",
                     WordOfTheDayId = 1,
                     LastUpdated = DateTime.Now
                 }
@@ -69,7 +69,7 @@ namespace word_of_the_day.Models
                 {
                     Id = 1,
                     WordId = 1,
-                    UserId = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130004")
+                    UserId = "17927udiud2981"
                 }
             };
 
