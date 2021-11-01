@@ -36,26 +36,8 @@ namespace word_of_the_day.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task Get()
-        {
-            var accessToken = await HttpContext.GetTokenAsync("Auth0", "access_token");
-
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(_apiEndpoint, "api/word"));
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-            var response = await httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            await response.Content.CopyToAsync(HttpContext.Response.Body);
-
-        }
-
         [HttpGet("[controller]")]
-        [Authorize(AuthenticationSchemes = "Bearer")]    
+        [Authorize]    
         [RequiredScope("read:word")]
         public async Task<ActionResult<IEnumerable<Word>>> GetListWords()
         {
@@ -68,19 +50,22 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        [HttpGet("[controller]/{username}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]    
+        [HttpGet("[controller]/word-of-the-day")]
+        [Authorize] 
         [RequiredScope("read:word")]
-        public async Task<ActionResult<Word>> GetNewWord(string username)
+        public async Task<ActionResult<Word>> GetWordOfTheDay()
         {
-            User user =  await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var userId = UserExtension.GetUserId(this.User);
+            User user =  await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
 
             if(user == null)
                 return NotFound();
 
             TimeSpan diff = DateTime.Now - user.LastUpdated;
-            if(diff.Hours < 23)
-                return _context.Words.FirstOrDefault(x => x.WordId == user.WordOfTheDayId);
+            if(diff.Hours < 23){
+                var wordOfTheDay = _context.Words.FirstOrDefault(x => x.WordId == user.WordOfTheDayId);
+                return wordOfTheDay;
+            }
 
             var query = from word in _context.Set<Word>()
                         from p in _context.Set<PreviouslyUsedWord>().Where(
@@ -95,10 +80,28 @@ namespace word_of_the_day.Controllers
             if(availableWordsCount < 1)
                 return NoContent();
 
-            int index = random.Next(0, availableWordsCount);
+            int index = random.Next(0, availableWordsCount - 1);
             Word newWord = availableWords[index];
 
             return Ok(newWord);
         }
+
+        // [HttpGet]
+        // public async Task Get()
+        // {
+        //     var accessToken = await HttpContext.GetTokenAsync("Auth0", "access_token");
+
+        //     var httpClient = _httpClientFactory.CreateClient();
+
+        //     var request = new HttpRequestMessage(HttpMethod.Get, new Uri(_apiEndpoint, "api/word"));
+        //     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        //     var response = await httpClient.SendAsync(request);
+
+        //     response.EnsureSuccessStatusCode();
+
+        //     await response.Content.CopyToAsync(HttpContext.Response.Body);
+
+        // }
     }
 }

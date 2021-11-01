@@ -6,5 +6,5 @@ public class PreviouslyUsedWord
     [Key]
     public int Id { get; set; }
     public int WordId { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
 }

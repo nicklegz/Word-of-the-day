@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { CustomAuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-callback',
@@ -8,8 +9,21 @@ import { CustomAuthService } from 'src/app/services/auth.service';
 })
 export class CallbackComponent implements OnInit {
 
-  constructor(public auth0: CustomAuthService) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   ngOnInit(): void {
+    this.auth.getUserInfo().subscribe(data => {
+      if(data.isAuthenticated == false){
+        
+      }
+
+      if(data.createUser == true){
+        this.auth.createUser();
+      }
+
+    })
+
+    window.location.href = "http://localhost:4200/home";
+
   }
 }
