@@ -37,11 +37,17 @@ export class WordService {
       this.observeWord = this.http.get<Word>(baseApiUrl + '/word/word-of-the-day');
       this.observeWord.subscribe(word => {
         this.word.WordId = word.WordId;
-        this.word.WordText = word.WordText;
+        this.word.Text = word.Text;
+        this.word.Type = word.Type;
         this.word.Definition = word.Definition;
       });
 
-    // localStorage.setItem('user_word', JSON.stringify());
+      this.userWord = {
+        WordOfTheDay: this.word,
+        LastUpdated: Date.now(),
+      }
+    
+      localStorage.setItem('user_word', JSON.stringify(this.userWord));
     
       return this.observeWord;
     }

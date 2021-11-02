@@ -1,6 +1,7 @@
 export interface Word
 {
   WordId: number;
-  WordText: string;
+  Text: string;
+  Type: string;
   Definition: string;
 }

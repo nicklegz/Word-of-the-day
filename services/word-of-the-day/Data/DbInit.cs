@@ -18,7 +18,8 @@ namespace word_of_the_day.Models
             var happy = new Word
             {
                 WordId = 1,
-                WordText = "Happy",
+                Text = "Happy",
+                Type = "Noun",
                 Definition = "To be happy"
             };
 
@@ -29,7 +30,8 @@ namespace word_of_the_day.Models
                 new Word
                 {
                     WordId = 2, 
-                    WordText = "Sad",
+                    Text = "Sad",
+                    Type = "Noun",
                     Definition = "I am sad"
                 }
             };
