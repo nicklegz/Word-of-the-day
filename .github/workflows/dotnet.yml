@@ -1,0 +1,29 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/word-of-the-day/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'services/word-of-the-day/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore 'services/word-of-the-day'
+    - name: Build
+      run: dotnet build 'services/word-of-the-day' --no-restore
+    - name: Test
+      run: dotnet test 'services/word-of-the-day' --no-build --verbosity normal
