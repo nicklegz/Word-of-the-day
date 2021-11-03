@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace word_of_the_day.Models
 {
@@ -15,27 +17,12 @@ namespace word_of_the_day.Models
                 return;
             }
 
-            var happy = new Word
-            {
-                WordId = 1,
-                Text = "Happy",
-                Type = "Noun",
-                Definition = "To be happy"
-            };
+            var words = new List<Word>();
 
-            var words = new List<Word>
-            {
-                happy,
-
-                new Word
-                {
-                    WordId = 2, 
-                    Text = "Sad",
-                    Type = "Noun",
-                    Definition = "I am sad"
-                }
-            };
-
+            var filePath = "/Users/nicklegz/Documents/Programming/Projects/word_of_the_day/services/word-of-the-day/Data/word.json";
+            var wordJson = File.ReadAllText(filePath);
+            words = JsonSerializer.Deserialize<List<Word>>(wordJson);
+            
             foreach(Word w in words)
             {
                 context.Words.Add(w);
