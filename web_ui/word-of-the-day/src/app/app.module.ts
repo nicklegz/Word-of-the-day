@@ -11,6 +11,7 @@ import { CallbackComponent } from './components/callback/callback.component';
 import { LoginComponent } from './components/login/login.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -26,8 +27,8 @@ import { AuthInterceptor } from './services/auth.interceptor';
     AppRoutingModule,
     HttpClientModule,
     AuthModule.forRoot({
-      domain: 'nicklegz.us.auth0.com',
-      clientId: 'SZjwwZGVwjWDK5giyHeeFMTVCDRIqrFI'}),
+      domain: environment.domain,
+      clientId: environment.clientId}),
   ],
   providers: [
     {
