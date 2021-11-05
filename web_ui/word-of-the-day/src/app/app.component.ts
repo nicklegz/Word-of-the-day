@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserInfo } from './interfaces/userAuth.interface';
@@ -13,8 +12,7 @@ export class AppComponent implements OnInit{
   title = 'word-of-the-day';
   userInfo!: UserInfo;
 
-
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router){}
+  constructor(private auth: AuthService, private router: Router){}
 
   ngOnInit(): void{
     this.auth.getUserInfo().subscribe(data =>{
@@ -24,13 +22,9 @@ export class AppComponent implements OnInit{
 
       else if(data.createUser == true){
         this.auth.createUser();
-        this.router.navigate(['/home']);
       }
 
-      else{
-        this.router.navigate(['/home']);
-      }
-
+      this.router.navigate(['/home']);
     })
   }
 }
