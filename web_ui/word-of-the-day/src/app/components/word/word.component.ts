@@ -10,12 +10,11 @@ import { WordService } from '../../services/word.service';
 })
 export class WordComponent implements OnInit {
 
-  wordObject!: Observable<Word>;
-  profile: any;
+  word$?: Observable<Word>;
 
   constructor(private wordService: WordService) { }
 
   ngOnInit(): void {
-    this.wordObject = this.wordService.getWordOfTheDay();
+    this.word$ = this.wordService.getWordOfTheDay();
   }
 }
