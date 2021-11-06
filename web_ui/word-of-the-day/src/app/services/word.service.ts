@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
 import { Observable, of, throwError } from 'rxjs';
 import { Word } from '../interfaces/word.interface';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { UserWord } from '../interfaces/userword.interface';
 import { share} from 'rxjs/operators';
+
 
 const baseApiUrl = environment.apiURL;
 
@@ -20,7 +20,7 @@ export class WordService {
   userWord!: UserWord;
   timeInterval: number = 86400000;
 
-  constructor(public auth: AuthService, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   public getWordOfTheDay(): Observable<Word> {
     //localStorage.clear();

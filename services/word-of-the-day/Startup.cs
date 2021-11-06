@@ -72,7 +72,10 @@ namespace word_of_the_day
                 };
             });
 
-            services.AddDbContext<WordOfTheDayContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DevConnection")));
+            services.AddDbContext<WordOfTheDayContext>(
+                options => options.UseNpgsql(
+                    Configuration.GetConnectionString(
+                        "DevConnection")));
             services.AddTransient<IWordExtension, WordExtension>();
             services.AddTransient<IUserExtension, UserExtension>();
 

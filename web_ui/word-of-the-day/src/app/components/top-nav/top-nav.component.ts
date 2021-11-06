@@ -1,6 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-top-nav',
@@ -9,7 +7,7 @@ import { AuthService } from '@auth0/auth0-angular';
 })
 export class TopNavComponent implements OnInit {
 
-  constructor(@Inject(DOCUMENT) public document: Document, public auth: AuthService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

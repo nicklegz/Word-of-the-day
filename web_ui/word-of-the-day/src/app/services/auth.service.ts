@@ -11,7 +11,7 @@ export class AuthService {
 
   authUrl = environment.apiURL + "/auth";
 
-  constructor(private http: HttpClient,  public router: Router) { }
+  constructor(private http: HttpClient,  private router: Router) { }
 
   login(){
     window.location.href = this.authUrl + "/login";

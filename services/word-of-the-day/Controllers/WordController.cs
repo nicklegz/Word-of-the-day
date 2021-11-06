@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using word_of_the_day.Interfaces;
-using word_of_the_day.Models;
 
 namespace word_of_the_day.Controllers
 {
