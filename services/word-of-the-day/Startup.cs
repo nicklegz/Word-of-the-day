@@ -16,6 +16,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Api.Authorization;
+using word_of_the_day.Interfaces;
+using word_of_the_day.Extensions;
 
 namespace word_of_the_day
 {
@@ -71,6 +73,8 @@ namespace word_of_the_day
             });
 
             services.AddDbContext<WordOfTheDayContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DevConnection")));
+            services.AddTransient<IWordExtension, WordExtension>();
+            services.AddTransient<IUserExtension, UserExtension>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -95,7 +99,6 @@ namespace word_of_the_day
 
         private void ConfigureOpenIdConnect(OpenIdConnectOptions options)
         {
-            
             // Set the authority to your Auth0 domain
             options.Authority = $"https://{Configuration["Auth0:Domain"]}";
 

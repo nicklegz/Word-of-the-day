@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using word_of_the_day.Models;
 using System;
+using word_of_the_day.Interfaces;
+using System.Collections.Generic;
 
 namespace word_of_the_day.Controllers
 {
@@ -16,13 +18,14 @@ namespace word_of_the_day.Controllers
     [Route("api/")]
     public class AuthController : Controller
     {
-        private readonly WordOfTheDayContext _context;
         private static readonly Random random = new Random();
+        private readonly IUserExtension _userExtension;
+        private readonly IWordExtension _wordExtension;
 
-
-        public AuthController(WordOfTheDayContext context)
+        public AuthController(IUserExtension userExtension, IWordExtension wordExtension)
         {
-            _context = context;
+            _userExtension = userExtension;
+            _wordExtension = wordExtension;
         }
 
         [HttpGet]
@@ -56,7 +59,7 @@ namespace word_of_the_day.Controllers
                             .ToArray();
                 var userId = claims.Select(x => x.value).FirstOrDefault();
                 
-                User user =  await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                User user =  await _userExtension.GetUserAsync(userId);
                 if(user == null){
                     createUser = true;
                 }
@@ -71,26 +74,18 @@ namespace word_of_the_day.Controllers
         [Route("[controller]/user")]
         public async Task CreateUser()
         {
-            var userId = UserExtension.GetUserId(this.User);
+            var userId = _userExtension.GetUserId(this.User);
+            
             if(userId != "")
             {
-                var availableWords = await _context.Words.ToListAsync();
-                var wordCount = availableWords.Count();
-                var index = random.Next(0, wordCount - 1);
-
-                var user = new User()
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = userId,
-                    LastUpdated = DateTime.Now,
-                    WordOfTheDayId = availableWords[index].WordId
-                };
-
-                var newUser = await _context.Users.AddAsync(user);
-                _context.SaveChanges();
+                List<Word> availableWords = await _wordExtension.GetListOfWordsAsync();
+                int wordCount = availableWords.Count();
+                int newWordId = _wordExtension.GetNewWordOfTheDay(availableWords, wordCount).WordId;
+                await _userExtension.AddUserAsync(userId, newWordId);
             }
 
-            else{
+            else
+            {
                 throw new Exception("User does not exist");  
             }
         }

@@ -1,17 +1,13 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Web.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using word_of_the_day.Interfaces;
 using word_of_the_day.Models;
 
 namespace word_of_the_day.Controllers
@@ -21,29 +17,34 @@ namespace word_of_the_day.Controllers
     public class WordController : ControllerBase
     {
         private static readonly Random random = new Random();
-        private readonly WordOfTheDayContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Uri _apiEndpoint;
+        private readonly IUserExtension _userExtension;
+        private readonly IWordExtension _wordExtension;
 
-        public WordController(WordOfTheDayContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public WordController(
+            IHttpClientFactory httpClientFactory, 
+            IConfiguration configuration,
+            IUserExtension userExtension,
+            IWordExtension wordExtension)
         {
-            _httpClientFactory = httpClientFactory;  
-
             if(configuration["WordApiEndpoint"] == null)
                 throw new ArgumentNullException("The Word Api Endpoint is missing from the configuration");
-
+            
+            _httpClientFactory = httpClientFactory;  
             _apiEndpoint = new Uri(configuration["WordApiEndpoint"], UriKind.Absolute);
-            _context = context;
+            _userExtension = userExtension;
+            _wordExtension = wordExtension;
         }
 
         [HttpGet("[controller]")]
         [Authorize]    
         [RequiredScope("read:word")]
-        public async Task<ActionResult<IEnumerable<Word>>> GetListWords()
+        public async Task<ActionResult<List<Word>>> GetListWords()
         {
-            var words = await _context.Words.ToListAsync();
-            if(words == null)
-            {
+            var words = await _wordExtension.GetListOfWordsAsync();
+
+            if(words == null){
                 return NotFound();
             }
 
@@ -55,53 +56,25 @@ namespace word_of_the_day.Controllers
         [RequiredScope("read:word")]
         public async Task<ActionResult<Word>> GetWordOfTheDay()
         {
-            var userId = UserExtension.GetUserId(this.User);
-            User user =  await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var userId = _userExtension.GetUserId(this.User);
+            User user =  await _userExtension.GetUserAsync(userId);
 
             if(user == null)
                 return NotFound();
 
             TimeSpan diff = DateTime.Now - user.LastUpdated;
-            if(diff.Hours < 23){
-                var wordOfTheDay = _context.Words.FirstOrDefault(x => x.WordId == user.WordOfTheDayId);
-                return wordOfTheDay;
-            }
+            if(diff.Hours < 24)
+                return await _wordExtension.GetExistingWordOfTheDayAsync(user);
 
-            var query = from word in _context.Set<Word>()
-                        from p in _context.Set<PreviouslyUsedWord>().Where(
-                            p => word.WordId == p.WordId && 
-                            p.UserId == user.UserId).DefaultIfEmpty()
-                        where p == null
-                        select word;
-
-            var availableWords = await query.ToListAsync();
+            var availableWords = await _wordExtension.GetListAvailableWordsAsync(user);
 
             int availableWordsCount = availableWords.Count();
             if(availableWordsCount < 1)
                 return NoContent();
 
-            int index = random.Next(0, availableWordsCount - 1);
-            Word newWord = availableWords[index];
+            Word newWord = _wordExtension.GetNewWordOfTheDay(availableWords, availableWordsCount);
 
             return Ok(newWord);
         }
-
-        // [HttpGet]
-        // public async Task Get()
-        // {
-        //     var accessToken = await HttpContext.GetTokenAsync("Auth0", "access_token");
-
-        //     var httpClient = _httpClientFactory.CreateClient();
-
-        //     var request = new HttpRequestMessage(HttpMethod.Get, new Uri(_apiEndpoint, "api/word"));
-        //     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-        //     var response = await httpClient.SendAsync(request);
-
-        //     response.EnsureSuccessStatusCode();
-
-        //     await response.Content.CopyToAsync(HttpContext.Response.Body);
-
-        // }
     }
 }
