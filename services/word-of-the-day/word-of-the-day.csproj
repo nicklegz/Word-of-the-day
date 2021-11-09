@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>word_of_the_day</RootNamespace>
+    <UserSecretsId>021bb333-c08b-4c50-81e2-2e27cd62be64</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

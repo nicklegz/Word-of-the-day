@@ -22,10 +22,10 @@ namespace word_of_the_day.Models
             var filePath = "/Users/nicklegz/Documents/Programming/Projects/word_of_the_day/services/word-of-the-day/Data/word.json";
             var wordJson = File.ReadAllText(filePath);
             words = JsonSerializer.Deserialize<List<Word>>(wordJson);
-            
-            foreach(Word w in words)
+
+            for(int i = 0; i < 7000; i++)
             {
-                context.Words.Add(w);
+                context.Words.Add(words[i]);
             }
 
             var users = new List<User>()
