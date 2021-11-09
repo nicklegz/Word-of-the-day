@@ -14,4 +14,5 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "word-of-the-day.dll"]
+# ENTRYPOINT ["dotnet", "word-of-the-day.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet word-of-the-day.dll

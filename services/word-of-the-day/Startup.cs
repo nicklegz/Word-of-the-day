@@ -52,7 +52,7 @@ namespace word_of_the_day
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:4200")
+                    builder => builder.WithOrigins("https://worddujour.herokuapp.com")
                     .AllowAnyMethod()
                     .AllowCredentials()
                     .AllowAnyHeader());
