@@ -7,6 +7,7 @@ const app = express();
 const whitelist = ['https://api-worddujour.herokuapp.com', 'http://api-worddujour.herokuapp.com']; // list of allow domain
 
 const corsOptions = {
+    credentials: true,
     origin: function (origin, callback) {
         if (!origin) {
             return callback(null, true);

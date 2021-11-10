@@ -19,7 +19,7 @@ export class AppComponent implements OnInit{
       if(data.isAuthenticated == false){
         this.auth.login();
       }
-
+      
       else if(data.createUser == true){
         this.auth.createUser();
       }
