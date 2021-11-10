@@ -28,7 +28,7 @@ namespace word_of_the_day.Controllers
 
         [HttpGet]
         [Route("[controller]/login")]
-        public ActionResult Login(string returnUrl = "http://localhost:4200")
+        public ActionResult Login(string returnUrl = "https://worddujour.herokuapp.com")
         {
             return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl});
         }
