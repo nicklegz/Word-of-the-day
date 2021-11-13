@@ -8,13 +8,15 @@ import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopNavComponent,
     WordComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

@@ -12,19 +12,14 @@ export class AppComponent implements OnInit{
   title = 'word-of-the-day';
   userInfo!: UserInfo;
 
-  constructor(private auth: AuthService, private router: Router){}
+  constructor(private auth: AuthService){}
 
   ngOnInit(): void{
     this.auth.getUserInfo().subscribe(data =>{
       if(data.isAuthenticated == false){
         this.auth.login();
       }
-      
-      else if(data.createUser == true){
-        this.auth.createUser();
-      }
 
-      this.router.navigate(['/home']);
     })
   }
 }

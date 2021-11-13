@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { Word } from '../../interfaces/word.interface';
 import { WordService } from '../../services/word.service';
 
@@ -12,9 +14,19 @@ export class WordComponent implements OnInit {
 
   word$?: Observable<Word>;
 
-  constructor(private wordService: WordService) { }
+  constructor(private wordService: WordService, private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
+    this.auth.getUserInfo().subscribe(data =>{
+      if(data.isAuthenticated == false){
+        this.router.navigate(['/error'])
+        throw new Error("User is not authenticated")
+      }
+      else if(data.createUser == true){
+        this.auth.createUser();
+      }
+    })
+
     this.word$ = this.wordService.getWordOfTheDay();
   }
 }
