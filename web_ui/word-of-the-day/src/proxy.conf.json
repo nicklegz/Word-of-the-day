@@ -1,7 +1,8 @@
 {
     "/api/*":{
-        "target": "http://localhost:5000",
-        "secure": false,
-        "logLevel": "debug"
+        "target": "http://api-worddujour.herokuapp.com",
+        "secure": true,
+        "logLevel": "debug",
+        "changeOrigin": true
     }
 }

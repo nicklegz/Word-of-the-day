@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 namespace word_of_the_day.Controllers
 {
     [ApiController]
-    [EnableCors]
     [Route("api/")]
     public class AuthController : Controller
     {
@@ -28,7 +26,7 @@ namespace word_of_the_day.Controllers
 
         [HttpGet]
         [Route("[controller]/login")]
-        public ActionResult Login(string returnUrl = "https://worddujour.herokuapp.com")
+        public ActionResult Login(string returnUrl = "https://worddujour.herokuapp.com/")
         {
             return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl});
         }

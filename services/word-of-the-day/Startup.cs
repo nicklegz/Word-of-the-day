@@ -46,13 +46,16 @@ namespace word_of_the_day
                 o.Cookie.HttpOnly = true;
             })
             .AddOpenIdConnect("Auth0", options => ConfigureOpenIdConnect(options));
+
   
             services.AddHttpClient();
 
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("https://worddujour.herokuapp.com","http://worddujour.herokuapp.com")
+                    builder => builder.WithOrigins(
+                        "https://worddujour.herokuapp.com", 
+                        "http://worddujour.herokuapp.com")
                     .AllowAnyMethod()
                     .AllowCredentials()
                     .AllowAnyHeader());
@@ -120,8 +123,6 @@ namespace word_of_the_day
             options.Scope.Add("offline_access");
             options.Scope.Add("read:word");
             
-            // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
-            // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
             options.CallbackPath = new PathString("/callback");
 
             // Configure the Claims Issuer to be Auth0
@@ -162,6 +163,12 @@ namespace word_of_the_day
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -170,12 +177,12 @@ namespace word_of_the_day
             }
 
             app.UseHttpsRedirection();
+            
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
             app.UseCors("CorsPolicy");
-
-            app.UseCookiePolicy();
 
             app.UseAuthentication();
 
