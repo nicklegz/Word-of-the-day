@@ -4,7 +4,7 @@ import { AuthGuard } from './auth.guard';
 import { WordComponent } from './components/word/word.component';
 
 const routes: Routes = [
-  {path: '/home', component: WordComponent, canActivate:[AuthGuard]},
+  {path: 'home', component: WordComponent, canActivate:[AuthGuard]},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: '**', redirectTo: '/home'}
 ]; 
