@@ -5,10 +5,9 @@ import { ErrorComponent } from './components/error/error.component';
 import { WordComponent } from './components/word/word.component';
 
 const routes: Routes = [
-  {path: 'home', component: WordComponent, canActivate:[AuthGuard]},
-  {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: 'error', component: ErrorComponent}
-];
+  {path: '', component: WordComponent, canActivate:[AuthGuard]},
+  {path: '**', redirectTo: ''}
+]; 
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

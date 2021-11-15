@@ -18,11 +18,7 @@ export class WordComponent implements OnInit {
 
   ngOnInit(): void {
     this.auth.getUserInfo().subscribe(data =>{
-      if(data.isAuthenticated == false){
-        this.router.navigate(['/error'])
-        throw new Error("User is not authenticated")
-      }
-      else if(data.createUser == true){
+      if(data.createUser == true){
         this.auth.createUser();
       }
     })
