@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { ErrorComponent } from './components/error/error.component';
+import { AuthModule } from '@auth0/auth0-angular';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,10 @@ import { ErrorComponent } from './components/error/error.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    AuthModule.forRoot({
+      domain: environment.domain,
+      clientId: environment.clientId
+    }),
   ],
   providers: [
     {
