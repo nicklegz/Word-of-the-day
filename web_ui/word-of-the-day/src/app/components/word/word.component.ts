@@ -12,7 +12,7 @@ import { WordService } from '../../services/word.service';
 })
 export class WordComponent implements OnInit {
 
-  word$?: Observable<Word>;
+  word$!: Observable<Word>;
 
   constructor(private wordService: WordService, private auth: AuthService, private router: Router) { }
 
