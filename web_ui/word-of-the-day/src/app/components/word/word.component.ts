@@ -34,7 +34,7 @@ export class WordComponent implements OnInit {
     this.auth.user$
     .pipe(
       concatMap(user =>
-        this.http.post(environment.apiURL + "/auth/user/${user.nickname}", "")
+        this.http.post(encodeURI(environment.apiURL + "/auth/user/${user.nickname}"), "")
         )
     ).subscribe();
   }
