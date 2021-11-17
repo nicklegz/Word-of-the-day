@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { Word } from '../interfaces/word.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { share} from 'rxjs/operators';
+import { concatMap, share} from 'rxjs/operators';
+import { AuthService } from '@auth0/auth0-angular';
 
 const baseApiUrl = environment.apiURL;
 
@@ -14,11 +15,14 @@ const baseApiUrl = environment.apiURL;
 export class WordService {
   word$!: Observable<Word>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   public getWordOfTheDay(): Observable<Word> {
-    this.word$ = this.http.get<Word>(baseApiUrl + '/word/word-of-the-day').pipe(share());
-    return this.word$;
+    return this.auth.user$
+    .pipe(
+      concatMap(user =>
+        this.http.get<Word>(encodeURI(baseApiUrl + '/word/word-of-the-day/${user.nickname}'))
+      )).pipe(share());
   }
 }
 

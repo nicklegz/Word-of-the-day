@@ -21,7 +21,5 @@ export class AuthService {
     return this.http.get<UserInfo>(this.authUrl + "/user");
   }
 
-  createUser(){
-    this.http.post(this.authUrl + "/user", "").subscribe();
-  }
+  
 }
