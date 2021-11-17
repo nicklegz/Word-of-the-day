@@ -40,6 +40,11 @@ export class WordComponent implements OnInit {
   }
 
   getUserInfo(){
-    return this.http.get<UserInfo>(environment.apiURL + "/auth/user");
+    return this.auth.user$
+    .pipe(
+      concatMap(user =>
+        this.http.get<UserInfo>(environment.apiURL + "/auth/user/" + user?.nickname)
+        )
+    )
   }
 }
