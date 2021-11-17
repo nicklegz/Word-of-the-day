@@ -21,7 +21,7 @@ export class WordService {
     return this.auth.user$
     .pipe(
       concatMap(user =>
-        this.http.get<Word>(encodeURI(baseApiUrl + '/word/word-of-the-day/${user.nickname}'))
+        this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.nickname)
       )).pipe(share());
   }
 }
