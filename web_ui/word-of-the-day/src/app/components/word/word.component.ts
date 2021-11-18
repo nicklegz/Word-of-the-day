@@ -17,6 +17,7 @@ import { WordService } from '../../services/word.service';
 export class WordComponent implements OnInit {
 
   word$!: Observable<Word>;
+  loadingChange$: any;
   loading$ = this.loader.loading$;
 
   constructor(
@@ -35,7 +36,9 @@ export class WordComponent implements OnInit {
     })
 
     this.word$ = this.wordService.getWordOfTheDay();
-    this.word$.subscribe(res => this.loader.hide());
+    this.loadingChange$ = this.word$.pipe(finalize(() => 
+    this.loader.hide()
+  ));
   }
 
   createUser(){
