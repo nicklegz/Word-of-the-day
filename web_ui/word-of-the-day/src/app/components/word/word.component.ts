@@ -34,10 +34,6 @@ export class WordComponent implements OnInit {
     })
 
     this.word$ = this.wordService.getWordOfTheDay().pipe(share());
-    this.word$.pipe(finalize(() => 
-      this.loader.hide()
-    ));
-      
   }
 
   createUser(){
