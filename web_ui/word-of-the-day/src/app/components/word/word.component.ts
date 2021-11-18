@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
-import { concatMap, finalize } from 'rxjs/operators';
+import { concatMap, finalize, share } from 'rxjs/operators';
 import { UserInfo } from 'src/app/interfaces/userAuth.interface';
 import { LoadingService } from 'src/app/services/loading.service';
 import { environment } from 'src/environments/environment';
@@ -32,8 +32,9 @@ export class WordComponent implements OnInit {
         this.createUser();
       }
     })
-
-    this.word$ = this.wordService.getWordOfTheDay().pipe(finalize(() =>{
+    this.word$ = this.wordService.getWordOfTheDay().pipe(
+      share(),
+      finalize(() =>{
       this.loader.hide();
     }));
   }
