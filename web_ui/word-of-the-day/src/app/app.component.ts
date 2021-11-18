@@ -10,6 +10,9 @@ export class AppComponent implements OnInit{
   title = 'word-of-the-day';
   userInfo!: UserInfo;
 
+  constructor(){}
+
   ngOnInit(): void{
+    
   }
 }

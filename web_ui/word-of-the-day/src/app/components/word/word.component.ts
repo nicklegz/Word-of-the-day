@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, finalize } from 'rxjs/operators';
 import { UserInfo } from 'src/app/interfaces/userAuth.interface';
+import { LoadingService } from 'src/app/services/loading.service';
 import { environment } from 'src/environments/environment';
 import { Word } from '../../interfaces/word.interface';
 import { WordService } from '../../services/word.service';
@@ -17,17 +17,25 @@ import { WordService } from '../../services/word.service';
 export class WordComponent implements OnInit {
 
   word$!: Observable<Word>;
-
-  constructor(private wordService: WordService, private auth: AuthService, private router: Router, private http: HttpClient) { }
+  loading$ = this.loader.loading$;
+  constructor(
+    private wordService: WordService, 
+    private auth: AuthService, 
+    private http: HttpClient,
+    private loader: LoadingService) { }
 
   ngOnInit(): void {
+
+    this.loader.show();
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
         this.createUser();
       }
     })
 
-    this.word$ = this.wordService.getWordOfTheDay();
+    this.word$ = this.wordService.getWordOfTheDay().pipe(finalize(() =>{
+      this.loader.hide();
+    }));
   }
 
   createUser(){
