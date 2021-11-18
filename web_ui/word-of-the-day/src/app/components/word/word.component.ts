@@ -33,7 +33,7 @@ export class WordComponent implements OnInit {
       }
     })
 
-    this.word$ = this.wordService.getWordOfTheDay().pipe(share());
+    this.word$ = this.wordService.getWordOfTheDay();
   }
 
   createUser(){

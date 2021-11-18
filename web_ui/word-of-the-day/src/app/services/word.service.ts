@@ -22,6 +22,6 @@ export class WordService {
     .pipe(
       concatMap(user =>
         this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.nickname))
-        )
+        ).pipe(share());
   }
 }
