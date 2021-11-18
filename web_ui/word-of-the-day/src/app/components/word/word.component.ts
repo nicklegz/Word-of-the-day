@@ -27,6 +27,7 @@ export class WordComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.loader.show()
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
         this.createUser();
@@ -34,6 +35,7 @@ export class WordComponent implements OnInit {
     })
 
     this.word$ = this.wordService.getWordOfTheDay();
+    this.word$.subscribe(res => this.loader.hide());
   }
 
   createUser(){

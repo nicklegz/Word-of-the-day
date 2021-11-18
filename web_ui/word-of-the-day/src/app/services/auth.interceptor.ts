@@ -12,22 +12,11 @@ let attempt = 0;
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private router: Router, private loader: LoadingService) {}
 
-  private numberOfRequests: number = 0;
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   request = request.clone({
   //     withCredentials: true
   // });
-
-    this.numberOfRequests++;
-    this.loader.show()
     return next.handle(request).pipe(
-      finalize(() => {
-        this.numberOfRequests--;
-        if(this.numberOfRequests == 0){
-          this.loader.hide()
-        }
-      }),
       retryWhen(errors => errors.pipe(
         tap(error =>{
           if (++attempt >= retryLimit || (error.status !== 500 && error.status !== 502)) {
