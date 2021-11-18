@@ -2,20 +2,32 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retryWhen, tap } from 'rxjs/operators';
+import { catchError, finalize, retryWhen, tap } from 'rxjs/operators';
+import { LoadingService } from './loading.service';
 
 const retryLimit = 3;
 let attempt = 0;
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private loader: LoadingService) {}
+
+  private numberOfRequests: number = 0;
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   //   request = request.clone({
   //     withCredentials: true
   // });
+
+    this.numberOfRequests++;
+    this.loader.show()
     return next.handle(request).pipe(
+      finalize(() => {
+        this.numberOfRequests--;
+        if(this.numberOfRequests == 0){
+          this.loader.hide()
+        }
+      }),
       retryWhen(errors => errors.pipe(
         tap(error =>{
           if (++attempt >= retryLimit || (error.status !== 500 && error.status !== 502)) {

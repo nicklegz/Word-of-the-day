@@ -18,6 +18,7 @@ export class WordComponent implements OnInit {
 
   word$!: Observable<Word>;
   loading$ = this.loader.loading$;
+
   constructor(
     private wordService: WordService, 
     private auth: AuthService, 
@@ -26,7 +27,6 @@ export class WordComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.loader.show();
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
         this.createUser();
@@ -42,7 +42,7 @@ export class WordComponent implements OnInit {
       concatMap(user =>
         this.http.post(environment.apiURL + "/auth/user/" + user?.nickname, "")
         )
-    ).subscribe();
+    )
   }
 
   getUserInfo(){
