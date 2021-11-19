@@ -3,8 +3,9 @@ import { Observable, of, throwError } from 'rxjs';
 import { Word } from '../interfaces/word.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { concatMap, share} from 'rxjs/operators';
+import { concatMap, finalize, share, take, tap} from 'rxjs/operators';
 import { AuthService } from '@auth0/auth0-angular';
+import { LoadingService } from './loading.service';
 
 const baseApiUrl = environment.apiURL;
 
@@ -13,15 +14,21 @@ const baseApiUrl = environment.apiURL;
 })
 
 export class WordService {
-  word$!: Observable<Word>;
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(
+    private http: HttpClient, 
+    private auth: AuthService,
+    private loader: LoadingService) {}
 
-  public getWordOfTheDay(): Observable<Word> {
+  public getWordOfTheDay(){
     return this.auth.user$
     .pipe(
       concatMap(user =>
         this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.nickname))
-        ).pipe(share());
+        );
+  }
+
+  public getWordOfTheDayTest(){
+    return this.http.get(baseApiUrl + '/word/word-of-the-day/nicklegz');
   }
 }

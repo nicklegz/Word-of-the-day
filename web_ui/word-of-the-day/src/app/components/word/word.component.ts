@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { Observable } from 'rxjs';
-import { concatMap, finalize, share } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { concatMap, finalize, map, share } from 'rxjs/operators';
 import { UserInfo } from 'src/app/interfaces/userAuth.interface';
 import { LoadingService } from 'src/app/services/loading.service';
 import { environment } from 'src/environments/environment';
@@ -15,14 +15,14 @@ import { WordService } from '../../services/word.service';
   styleUrls: ['./word.component.css']
 })
 export class WordComponent implements OnInit {
-
+  word!: any;
+  response: any;
   word$!: Observable<Word>;
-  loadingChange$: any;
   loading$ = this.loader.loading$;
 
   constructor(
     private wordService: WordService, 
-    private auth: AuthService, 
+    private auth: AuthService,
     private http: HttpClient,
     private loader: LoadingService) { }
 
@@ -35,10 +35,15 @@ export class WordComponent implements OnInit {
       }
     })
 
-    this.word$ = this.wordService.getWordOfTheDay();
-    this.loadingChange$ = this.word$.pipe(finalize(() => 
-    this.loader.hide()
-  ));
+    this.getWordOfTheDay();
+  }
+
+  async getWordOfTheDay(){
+    let res = await this.wordService.getWordOfTheDay().pipe(
+      finalize(() => this.loader.hide())
+    ).toPromise();
+    this.word = res;
+    // console.log(this.word);
   }
 
   createUser(){
@@ -47,7 +52,7 @@ export class WordComponent implements OnInit {
       concatMap(user =>
         this.http.post(environment.apiURL + "/auth/user/" + user?.nickname, "")
         )
-    )
+    ).subscribe()
   }
 
   getUserInfo(){
