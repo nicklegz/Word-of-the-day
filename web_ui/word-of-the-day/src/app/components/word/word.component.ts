@@ -37,7 +37,9 @@ export class WordComponent implements OnInit {
       }
     })
 
-    this.getWordOfTheDay();
+    this.getWordOfTheDay().then(data =>{
+      this.res = data;
+    });
   }
 
   ngAfterViewInit(){
@@ -46,8 +48,7 @@ export class WordComponent implements OnInit {
   }
 
   async getWordOfTheDay(){
-    this.res = await this.wordService.getWordOfTheDay().toPromise();
-    // console.log(this.word);
+    return await this.wordService.getWordOfTheDay().toPromise();
   }
 
   createUser(){
