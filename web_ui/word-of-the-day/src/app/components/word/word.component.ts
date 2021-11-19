@@ -25,11 +25,10 @@ export class WordComponent implements OnInit {
     private auth: AuthService,
     private http: HttpClient,
     private loader: LoadingService) { 
-      this.loading$ = this.loader.loading$;
     }
 
   ngOnInit(): void {
-
+    this.loading$ = this.loader.loading$;
     this.loader.show()
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
@@ -38,14 +37,13 @@ export class WordComponent implements OnInit {
     })
 
     this.getWordOfTheDay();
-    this.loader.hide();
   }
 
   async getWordOfTheDay(){
-    let res = await this.wordService.getWordOfTheDay().pipe(
-      finalize(() => this.loader.hide())
-    ).toPromise();
+    let res = await this.wordService.getWordOfTheDay().toPromise();
+    this.loader.hide();
     this.word = res;
+    
     // console.log(this.word);
   }
 
