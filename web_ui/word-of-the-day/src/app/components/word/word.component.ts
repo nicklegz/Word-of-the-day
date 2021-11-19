@@ -24,12 +24,12 @@ export class WordComponent implements OnInit {
     private wordService: WordService, 
     private auth: AuthService,
     private http: HttpClient,
-    private loader: LoadingService) { 
+    private loader: LoadingService) 
+    { 
+      this.loading$ = this.loader.loading$;
     }
 
   ngOnInit(): void {
-    this.loading$ = this.loader.loading$;
-    this.loader.show()
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
         this.createUser();
