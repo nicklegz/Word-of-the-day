@@ -38,6 +38,7 @@ export class WordComponent implements OnInit {
     })
 
     this.getWordOfTheDay();
+    this.loader.hide();
   }
 
   async getWordOfTheDay(){
