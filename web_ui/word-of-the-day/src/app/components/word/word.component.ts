@@ -19,6 +19,7 @@ export class WordComponent implements OnInit {
   response: any;
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
+  res: any;
 
   constructor(
     private wordService: WordService, 
@@ -41,11 +42,11 @@ export class WordComponent implements OnInit {
 
   ngAfterViewInit(){
     this.loader.hide();
+    this.word = this.res;
   }
 
   async getWordOfTheDay(){
-    let res = await this.wordService.getWordOfTheDay().toPromise();
-    this.word = res;
+    this.res = await this.wordService.getWordOfTheDay().toPromise();
     // console.log(this.word);
   }
 
