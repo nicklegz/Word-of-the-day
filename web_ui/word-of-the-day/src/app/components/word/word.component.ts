@@ -39,11 +39,13 @@ export class WordComponent implements OnInit {
     this.getWordOfTheDay();
   }
 
+  ngAfterViewInit(){
+    this.loader.hide();
+  }
+
   async getWordOfTheDay(){
     let res = await this.wordService.getWordOfTheDay().toPromise();
-    this.loader.hide();
     this.word = res;
-    
     // console.log(this.word);
   }
 
