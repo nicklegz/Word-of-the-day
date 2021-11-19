@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { concatMap, finalize, map, share } from 'rxjs/operators';
 import { UserInfo } from 'src/app/interfaces/userAuth.interface';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -18,13 +18,15 @@ export class WordComponent implements OnInit {
   word!: any;
   response: any;
   word$!: Observable<Word>;
-  loading$ = this.loader.loading$;
+  loading$!: Observable<boolean>;
 
   constructor(
     private wordService: WordService, 
     private auth: AuthService,
     private http: HttpClient,
-    private loader: LoadingService) { }
+    private loader: LoadingService) { 
+      this.loading$ = this.loader.loading$;
+    }
 
   ngOnInit(): void {
 
