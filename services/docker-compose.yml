@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  worddujour:
+    build: word-of-the-day
+    ports:
+      - 5000:80
+      - 5001:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=rebelles
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/worddujour.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro

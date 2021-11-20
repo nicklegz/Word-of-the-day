@@ -16,11 +16,6 @@ namespace word_of_the_day.Extensions
         {
             _context = context;
         }
-        public string GetUserId(ClaimsPrincipal user)
-        {
-            var userId = ((ClaimsIdentity)user.Identity).Claims.Select(x => x.Value).FirstOrDefault();
-            return userId;
-        } 
 
         public async Task<User> GetUserAsync(string userId)
         {

@@ -19,7 +19,7 @@ namespace word_of_the_day.Models
 
             var words = new List<Word>();
 
-            var filePath = "/Users/nicklegz/Documents/Programming/Projects/word_of_the_day/services/word-of-the-day/Data/word.json";
+            var filePath = "./Data/word.json";
             var wordJson = File.ReadAllText(filePath);
             words = JsonSerializer.Deserialize<List<Word>>(wordJson);
 

@@ -37,8 +37,8 @@ namespace word_of_the_day.Controllers
         }
 
         [HttpGet("[controller]")]
-        [Authorize]    
-        [RequiredScope("read:word")]
+        // [Authorize] 
+        // [RequiredScope("read:word")]
         public async Task<ActionResult<List<Word>>> GetListWords()
         {
             var words = await _wordExtension.GetListOfWordsAsync();
@@ -50,13 +50,12 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        [HttpGet("[controller]/word-of-the-day")]
-        [Authorize] 
-        [RequiredScope("read:word")]
-        public async Task<ActionResult<Word>> GetWordOfTheDay()
+        [HttpGet("[controller]/word-of-the-day/{userName}")]
+        // [Authorize] 
+        // [RequiredScope("read:word")]
+        public async Task<ActionResult<Word>> GetWordOfTheDay(string userName)
         {
-            var userId = _userExtension.GetUserId(this.User);
-            User user =  await _userExtension.GetUserAsync(userId);
+            User user =  await _userExtension.GetUserAsync(userName);
 
             if(user == null)
                 return NotFound();

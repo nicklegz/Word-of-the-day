@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System;
 using word_of_the_day.Interfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace word_of_the_day.Controllers
 {
@@ -24,66 +25,51 @@ namespace word_of_the_day.Controllers
             _wordExtension = wordExtension;
         }
 
-        [HttpGet]
         [Route("[controller]/login")]
-        public ActionResult Login(string returnUrl = "https://worddujour.herokuapp.com/")
+        public async Task Login(string returnUrl = "http://www.worddujour.ca")
         {
-            return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl});
+            await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl});
         }
 
-        [HttpGet]
         [Authorize]
         [Route("[controller]/logout")]
-        public ActionResult Logout()
+        public async Task Logout()
         {
-            return new SignOutResult("Auth0", new AuthenticationProperties
+            await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
             {
                 RedirectUri = Url.Action("Index", "Home")
             });
+            
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
         [HttpGet]
-        [Route("[controller]/user")]
-        public async Task<ActionResult> GetUser()
+        [Route("[controller]/user/{username}")]
+        public async Task<ActionResult> GetUser(string userName)
         {
             bool createUser = false;
-
-            if (User.Identity.IsAuthenticated)
+    
+            User user =  await _userExtension.GetUserAsync(userName);
+            if(user == null)
             {
-                var claims = ((ClaimsIdentity)this.User.Identity).Claims.Select(c =>
-                            new { type = c.Type, value = c.Value })
-                            .ToArray();
-                var userId = claims.Select(x => x.value).FirstOrDefault();
-                
-                User user =  await _userExtension.GetUserAsync(userId);
-                if(user == null){
-                    createUser = true;
-                }
-                
-                return Json(new { isAuthenticated = true, claims = claims, createUser });
+                createUser = true;
             }
-
-            return Json(new { isAuthenticated = false });
+            else
+            {
+                createUser = false;
+            }
+                
+            return Json(new { createUser });
         }
 
         [HttpPost]
-        [Route("[controller]/user")]
-        public async Task CreateUser()
+        [Route("[controller]/user/{username}")]
+        public async Task CreateUser(string userName)
         {
-            var userId = _userExtension.GetUserId(this.User);
-            
-            if(userId != "")
-            {
-                List<Word> availableWords = await _wordExtension.GetListOfWordsAsync();
-                int wordCount = availableWords.Count();
-                int newWordId = _wordExtension.GetNewWordOfTheDay(availableWords, wordCount).WordId;
-                await _userExtension.AddUserAsync(userId, newWordId);
-            }
-
-            else
-            {
-                throw new Exception("User does not exist");  
-            }
+            List<Word> availableWords = await _wordExtension.GetListOfWordsAsync();
+            int wordCount = availableWords.Count();
+            int newWordId = _wordExtension.GetNewWordOfTheDay(availableWords, wordCount).WordId;
+            await _userExtension.AddUserAsync(userName, newWordId);
         }
     }
 }
