@@ -5,11 +5,10 @@
   justify-content: center;
 }
 
-.card-body{
-  margin-left: 5rem;
+.card-title{
+  margin-left: 10rem;
 }
 
 .spinner-border{
-  margin-top: 15rem;
+  justify-content: center;
 }
-

@@ -11,6 +11,7 @@ import { AuthInterceptor } from './services/auth.interceptor';
 import { ErrorComponent } from './components/error/error.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,11 @@ import { environment } from 'src/environments/environment';
     TopNavComponent,
     WordComponent,
     BottomNavComponent,
-    ErrorComponent
+    ErrorComponent,
+    SpinnerComponent
+  ],
+  exports:[
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

@@ -1,16 +1,13 @@
 <div class="container-fluid">
-<div *ngIf="word$ | async; else loading">
-    <div class="card" style="width: 100rem;">
-      <div class="card-body">
-        <h2 class="card-title">{{(word$ | async)?.Text}}</h2>
-        <p class="card-text">{{(word$ | async)?.Type}}</p>
-        <p class="card-text">{{(word$ | async)?.Definition}}</p>
+      <div *ngIf="(loading$ | async)! == false" >
+        <div class="card" style="width: 100rem;">
+          <div class="card-body">
+            <!-- <h2 class="card-title">{{test$}}</h2> -->
+            <h2 class="card-title">{{(word$ | async)?.Text}}</h2>
+            <p class="card-text">{{(word$ | async)?.Type}}</p>
+            <p class="card-text">{{(word$ | async)?.Definition}}</p>
+          </div>
+        </div> 
       </div>
-    </div> 
+      <app-spinner *ngIf= "(loading$ | async)! == true"></app-spinner>
 </div>
-
-<ng-template #loading class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
-</ng-template>
-</div>
-

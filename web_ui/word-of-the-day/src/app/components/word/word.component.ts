@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { from, Observable, of } from 'rxjs';
-import { concatMap, finalize, map, share } from 'rxjs/operators';
+import { from, Observable, of, pipe } from 'rxjs';
+import { concatMap, delay, finalize, map, share } from 'rxjs/operators';
 import { UserInfo } from 'src/app/interfaces/userAuth.interface';
 import { LoadingService } from 'src/app/services/loading.service';
 import { environment } from 'src/environments/environment';
@@ -20,6 +20,8 @@ export class WordComponent implements OnInit {
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
   res: any;
+  spinner: boolean = true;
+  test$!: Observable<any>;
 
   constructor(
     private wordService: WordService, 
@@ -38,6 +40,11 @@ export class WordComponent implements OnInit {
     })
 
     this.word$ = this.wordService.getWordOfTheDay();
+    // let fake = [1,2,3]
+    // this.test$ = of(fake).pipe(delay(5000))
+    // this.test$.subscribe(() => this.loader.hide())
+
+    this.word$.subscribe(() => this.loader.hide())
   }
 
   createUser(){
