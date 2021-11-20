@@ -1,14 +1,14 @@
-.container-fluid{
+/* .container-fluid{
   display: flex;
   max-width: 1600px;
   align-items: center;
   justify-content: center;
-}
+} */
 
 .card-body{
   margin-left: 5rem;
 }
 
-.spinner-border{
+/* .spinner-border{
   justify-content: center;
-}
+} */
