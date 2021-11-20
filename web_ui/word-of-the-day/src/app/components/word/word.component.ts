@@ -26,34 +26,22 @@ export class WordComponent implements OnInit {
     private auth: AuthService,
     private http: HttpClient,
     private loader: LoadingService) 
-    { 
-      this.loading$ = this.loader.loading$;
-    }
+    {}
 
   ngOnInit(): void {
+    this.loading$ = this.loader.loading$;
+
     this.getUserInfo().subscribe(data =>{
       if(data.createUser == true){
         this.createUser();
       }
     })
 
-    this.getWordOfTheDay().then(data =>{
-      this.res = data;
-    });
-  }
-
-  ngAfterViewInit(){
-    this.loader.hide();
-    this.word = this.res;
-  }
-
-  async getWordOfTheDay(){
-    return await this.wordService.getWordOfTheDay().toPromise();
+    this.word$ = this.wordService.getWordOfTheDay();
   }
 
   createUser(){
-    this.auth.user$
-    .pipe(
+    this.auth.user$.pipe(
       concatMap(user =>
         this.http.post(environment.apiURL + "/auth/user/" + user?.nickname, "")
         )

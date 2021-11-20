@@ -17,18 +17,13 @@ export class WordService {
 
   constructor(
     private http: HttpClient, 
-    private auth: AuthService,
-    private loader: LoadingService) {}
+    private auth: AuthService) {}
 
   public getWordOfTheDay(){
     return this.auth.user$
     .pipe(
       concatMap(user =>
-        this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.nickname))
+        this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.nickname)),
         );
-  }
-
-  public getWordOfTheDayTest(){
-    return this.http.get(baseApiUrl + '/word/word-of-the-day/nicklegz');
   }
 }

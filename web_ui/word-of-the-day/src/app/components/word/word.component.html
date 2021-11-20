@@ -1,16 +1,16 @@
 <div class="container-fluid">
-<div *ngIf="loading$ | async; else notLoading" class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
+<div *ngIf="word$ | async as word; else loading" class="spinner-border" role="status">
+    <div class="card" style="width: 100rem;">
+      <div class="card-body">
+        <h2 class="card-title">[word]="word.Text"</h2>
+        <p class="card-text">[word]="word.Type"</p>
+        <p class="card-text">[word]="word.Definition"</p>
+      </div>
+    </div> 
 </div>
 
-<ng-template #notLoading>
-      <div class="card" style="width: 100rem;">
-        <div class="card-body">
-          <h2 class="card-title">{{word.Text}}</h2>
-          <p class="card-text">{{word.Type}}</p>
-          <p class="card-text">{{word.Definition}}</p>
-        </div>
-      </div>  
+<ng-template #loading>
+    <span class="visually-hidden">Loading...</span>
 </ng-template>
 </div>
 
