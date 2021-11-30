@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using word_of_the_day.Interfaces;
@@ -17,9 +15,9 @@ namespace word_of_the_day.Extensions
             _context = context;
         }
 
-        public async Task<User> GetUserAsync(string userId)
+        public async Task<User> GetUserAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         }
 
         public async Task AddUserAsync(string userId, int newWordId)
@@ -27,7 +25,7 @@ namespace word_of_the_day.Extensions
             var user = new User()
             {
                 Id = Guid.NewGuid(),
-                UserId = userId,
+                Username = userId,
                 LastUpdated = DateTime.Now,
                 WordOfTheDayId = newWordId
             };

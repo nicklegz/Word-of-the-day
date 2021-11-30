@@ -28,7 +28,7 @@ namespace word_of_the_day.Extensions
             var query = from word in _context.Set<Word>()
                         from p in _context.Set<PreviouslyUsedWord>().Where(
                             p => word.WordId == p.WordId && 
-                            p.UserId == user.UserId).DefaultIfEmpty()
+                            p.UserId == user.Username).DefaultIfEmpty()
                         where p == null
                         select word;
 
@@ -45,6 +45,5 @@ namespace word_of_the_day.Extensions
             int index = random.Next(0, wordsCount - 1);
             return words[index];
         }
-        
     }
 }
