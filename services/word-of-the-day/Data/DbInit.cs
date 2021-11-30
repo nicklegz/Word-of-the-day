@@ -33,7 +33,7 @@ namespace word_of_the_day.Models
                 new User
                 {
                     Id = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130002"),
-                    UserId = "17927udiud2981",
+                    Username = "17927udiud2981",
                     WordOfTheDayId = 1,
                     LastUpdated = DateTime.Now
                 },
@@ -41,7 +41,7 @@ namespace word_of_the_day.Models
                 new User
                 {
                     Id = Guid.Parse("844d024c-a958-11eb-bcbc-0242ac130001"),
-                    UserId = "2797ehkwh293",
+                    Username = "2797ehkwh293",
                     WordOfTheDayId = 1,
                     LastUpdated = DateTime.Now
                 }
