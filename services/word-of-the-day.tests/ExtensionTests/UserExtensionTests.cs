@@ -7,6 +7,7 @@ using word_of_the_day.Controllers;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 using word_of_the_day.tests.Data;
+using word_of_the_day.Extensions;
 
 namespace word_of_the_day.tests.ExtensionTests
 {
@@ -14,29 +15,27 @@ namespace word_of_the_day.tests.ExtensionTests
     {
         private DateTime dtNow = DateTime.Now;
         private readonly Mock<IConfiguration> mockConfig = new Mock<IConfiguration>();
-        private readonly Mock<IWordExtension> wordExtensionMock = new Mock<IWordExtension>();
+        private readonly Mock<IWordRepository> wordRepoMock = new Mock<IWordRepository>();
+
 
         [Fact]
         public async Task GetUserAsync_ValidUsername_ShouldReturnMockUser()
         {
             //Arrange
             string username =  "nicktest";
-              
-            var mockUserExtension = new Mock<IUserExtension>();
+            
+            var userRepoMock = new Mock<IUserRepository>();
 
-            mockUserExtension.Setup(userExt => userExt.GetUserAsync(username))
+            userRepoMock.Setup(userExt => userExt.GetUserAsync(username))
             .ReturnsAsync(
                 MockData.GetTestUsers().FirstOrDefault(
                     u => u.Username == username
             ));
-                
-            var controller = new WordController(
-                mockConfig.Object, 
-                mockUserExtension.Object,
-                wordExtensionMock.Object);
+            
+            var userExtension = new UserExtension(userRepoMock.Object);
 
             //Act
-            var result =  await controller.GetUserAsync(username);
+            var result =  await userExtension.GetUserAsync(username);
 
             //Assert
             Assert.Equal(username, result.Username);
@@ -48,21 +47,18 @@ namespace word_of_the_day.tests.ExtensionTests
             //Arrange
             string username = "fail";
 
-            var mockUserExtension = new Mock<IUserExtension>();
+            var userRepoMock = new Mock<IUserRepository>();
 
-            mockUserExtension.Setup(userExt => userExt.GetUserAsync(username))
+            userRepoMock.Setup(userExt => userExt.GetUserAsync(username))
             .ReturnsAsync(
                 MockData.GetTestUsers().FirstOrDefault(
                     u => u.Username == username
             ));
                 
-            var controller = new WordController(
-                mockConfig.Object, 
-                mockUserExtension.Object,
-                wordExtensionMock.Object);
+            var userExtension = new UserExtension(userRepoMock.Object);
 
             //Act
-            var result =  await controller.GetUserAsync(username);
+            var result =  await userExtension.GetUserAsync(username);
 
             //Assert
             Assert.Null(result);

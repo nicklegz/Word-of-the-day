@@ -1,9 +1,9 @@
-using System.Security.Claims;
+using System;
 using System.Threading.Tasks;
 
 namespace word_of_the_day.Interfaces
 {
-    public interface IUserExtension
+    public interface IUserRepository
     {
         Task<User> GetUserAsync(string userId);
         Task AddUserAsync(string userId, int newWordId);

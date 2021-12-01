@@ -96,8 +96,8 @@ namespace word_of_the_day
                 options => options.UseNpgsql(
                     Configuration.GetConnectionString(
                         "DevConnection")));
-            services.AddTransient<IWordExtension, WordExtension>();
-            services.AddTransient<IUserExtension, UserExtension>();
+            services.AddTransient<IWordRepository, WordExtension>();
+            services.AddTransient<IUserRepository, UserExtension>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
             {

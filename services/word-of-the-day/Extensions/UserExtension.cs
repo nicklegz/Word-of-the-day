@@ -6,32 +6,24 @@ using word_of_the_day.Models;
 
 namespace word_of_the_day.Extensions
 {
-    public class UserExtension : IUserExtension
+    public class UserExtension : IUserRepository
     {
-        private readonly WordOfTheDayContext _context;
+        private readonly IUserRepository _userRepo;
 
-        public UserExtension(WordOfTheDayContext context)
+        public UserExtension(IUserRepository userRepo)
         {
-            _context = context;
+            _userRepo = userRepo;
         }
 
         public async Task<User> GetUserAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            return await _userRepo.GetUserAsync(username);
         }
 
         public async Task AddUserAsync(string userId, int newWordId)
         {
-            var user = new User()
-            {
-                Id = Guid.NewGuid(),
-                Username = userId,
-                LastUpdated = DateTime.Now,
-                WordOfTheDayId = newWordId
-            };
-
-            await _context.Users.AddAsync(user);
-            _context.SaveChanges();
+            await _userRepo.AddUserAsync(userId, newWordId);
         }
+
     }
 }

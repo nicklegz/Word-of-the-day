@@ -15,21 +15,21 @@ namespace word_of_the_day.Controllers
     {
         private static readonly Random random = new Random();
         private readonly Uri _apiEndpoint;
-        private readonly IUserExtension _userExtension;
-        private readonly IWordExtension _wordExtension;
+        private readonly IUserRepository _userRepo;
+        private readonly IWordRepository _wordRepo;
         private readonly int wordTimeInterval = 24;
 
         public WordController(
             IConfiguration configuration,
-            IUserExtension userExtension,
-            IWordExtension wordExtension)
+            IUserRepository userRepo,
+            IWordRepository wordRepo)
         {
             // if(configuration["WordApiEndpoint"] == null)
             //     throw new ArgumentNullException("The Word Api Endpoint is missing from the configuration");
             
             // _apiEndpoint = new Uri(configuration["WordApiEndpoint"], UriKind.Absolute);
-            _userExtension = userExtension;
-            _wordExtension = wordExtension;
+            _userRepo = userRepo;
+            _wordRepo = wordRepo;
         }
 
         [HttpGet("[controller]")]
@@ -37,7 +37,7 @@ namespace word_of_the_day.Controllers
         // [RequiredScope("read:word")]
         public async Task<ActionResult<List<Word>>> GetListWords()
         {
-            var words = await _wordExtension.GetListOfWordsAsync();
+            var words = await _wordRepo.GetListOfWordsAsync();
 
             if(words == null){
                 return NotFound();
@@ -51,36 +51,26 @@ namespace word_of_the_day.Controllers
         // [RequiredScope("read:word")]
         public async Task<ActionResult<Word>> GetWordOfTheDay(string username)
         {
-            User user = await GetUserAsync(username);
+            User user = await _userRepo.GetUserAsync(username);
 
             if(user == null)
                 return NotFound($"User {username} does not exist.");
 
             if(IsNewWordRequired(user))
-                return await GetExistingWordAsync(user);
+                return await _wordRepo.GetExistingWordOfTheDayAsync(user);
 
-            var availableWords = await GetListAvailableWords(user);
+            var availableWords = await _wordRepo.GetListAvailableWordsAsync(user);
 
             int availableWordsCount = availableWords.Count();
             if(availableWordsCount < 1)
                 return NoContent();
 
-            Word newWord = GetNewWordOfTheDay(availableWords, availableWordsCount);
+            Word newWord = _wordRepo.GetNewWordOfTheDay(availableWords, availableWordsCount);
 
             return Ok(newWord);
-        }
+        }        
 
-        public async Task<User> GetUserAsync(string username)
-        {
-            return await _userExtension.GetUserAsync(username);
-        }
-
-        public async Task<Word> GetExistingWordAsync(User user)
-        {
-            return await _wordExtension.GetExistingWordOfTheDayAsync(user);
-        }
-
-        public Boolean IsNewWordRequired(User user)
+        private Boolean IsNewWordRequired(User user)
         {
             TimeSpan diff = DateTime.Now - user.LastUpdated;
             if(diff.Hours < 24)
@@ -89,16 +79,6 @@ namespace word_of_the_day.Controllers
             }
 
             return false;
-        }
-
-        public async Task<List<Word>> GetListAvailableWords(User user)
-        {
-            return await _wordExtension.GetListAvailableWordsAsync(user);
-        }
-
-        public Word GetNewWordOfTheDay(List<Word> availableWords, int availableWordsCount)
-        {
-            return _wordExtension.GetNewWordOfTheDay(availableWords, availableWordsCount);
         }
     }
 }

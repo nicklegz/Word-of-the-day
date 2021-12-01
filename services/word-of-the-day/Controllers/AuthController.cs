@@ -15,13 +15,13 @@ namespace word_of_the_day.Controllers
     public class AuthController : Controller
     {
         private static readonly Random random = new Random();
-        private readonly IUserExtension _userExtension;
-        private readonly IWordExtension _wordExtension;
+        private readonly IUserRepository _userRepo;
+        private readonly IWordRepository _wordRepo;
 
-        public AuthController(IUserExtension userExtension, IWordExtension wordExtension)
+        public AuthController(IUserRepository userRepo, IWordRepository wordRepo)
         {
-            _userExtension = userExtension;
-            _wordExtension = wordExtension;
+            _userRepo = userRepo;
+            _wordRepo = wordRepo;
         }
 
         [Route("[controller]/login")]
@@ -48,7 +48,7 @@ namespace word_of_the_day.Controllers
         {
             bool createUser = false;
     
-            User user =  await _userExtension.GetUserAsync(userName);
+            User user =  await _userRepo.GetUserAsync(userName);
             if(user == null)
             {
                 createUser = true;
@@ -65,10 +65,10 @@ namespace word_of_the_day.Controllers
         [Route("[controller]/user/{username}")]
         public async Task CreateUser(string userName)
         {
-            List<Word> availableWords = await _wordExtension.GetListOfWordsAsync();
+            List<Word> availableWords = await _wordRepo.GetListOfWordsAsync();
             int wordCount = availableWords.Count();
-            int newWordId = _wordExtension.GetNewWordOfTheDay(availableWords, wordCount).WordId;
-            await _userExtension.AddUserAsync(userName, newWordId);
+            int newWordId = _wordRepo.GetNewWordOfTheDay(availableWords, wordCount).WordId;
+            await _userRepo.AddUserAsync(userName, newWordId);
         }
     }
 }

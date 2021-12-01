@@ -1,49 +1,35 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using word_of_the_day.Interfaces;
-using word_of_the_day.Models;
-using System.Linq;
-using System;
 
 namespace word_of_the_day.Extensions
 {
-    public class WordExtension : IWordExtension
+    public class WordExtension : IWordRepository
     {
-        private readonly WordOfTheDayContext _context;
-        private static readonly Random random = new Random();
-
-        public WordExtension(WordOfTheDayContext context)
+        private readonly IWordRepository _wordRepo;
+        public WordExtension(IWordRepository wordRepo)
         {
-            _context = context;
+            _wordRepo = wordRepo;
         }
 
         public async Task<List<Word>> GetListOfWordsAsync()
         {
-            return await _context.Words.ToListAsync();
+            return await _wordRepo.GetListOfWordsAsync();
         }
 
         public async Task<List<Word>> GetListAvailableWordsAsync(User user)
         {
-            var query = from word in _context.Set<Word>()
-                        from p in _context.Set<PreviouslyUsedWord>().Where(
-                            p => word.WordId == p.WordId && 
-                            p.UserId == user.Username).DefaultIfEmpty()
-                        where p == null
-                        select word;
-
-            return await query.ToListAsync();
+            return await _wordRepo.GetListAvailableWordsAsync(user);
         }
 
         public async Task<Word> GetExistingWordOfTheDayAsync(User user)
         {
-            return await _context.Words.FirstOrDefaultAsync(x => x.WordId == user.WordOfTheDayId);
+            return await _wordRepo.GetExistingWordOfTheDayAsync(user);
         }
 
         public Word GetNewWordOfTheDay(List<Word> words, int wordsCount)
         {
-            int index = random.Next(0, wordsCount - 1);
-            return words[index];
+            return _wordRepo.GetNewWordOfTheDay(words, wordsCount);
         }
     }
 }

@@ -38,8 +38,8 @@ namespace word_of_the_day.tests.ExtensionTests
                 WordId = 1
             };
 
-            var mockUserExtension = new Mock<IUserExtension>();
-            var mockWordExtension = new Mock<IWordExtension>();
+            var mockUserExtension = new Mock<IUserRepository>();
+            var mockWordExtension = new Mock<IWordRepository>();
             mockUserExtension.Setup(userExt => userExt.GetUserAsync(mockUser.Username))
             .ReturnsAsync(
                 GetTestUsers().FirstOrDefault(
