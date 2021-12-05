@@ -15,13 +15,8 @@ import { WordService } from '../../services/word.service';
   styleUrls: ['./word.component.css']
 })
 export class WordComponent implements OnInit {
-  word!: any;
-  response: any;
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
-  res: any;
-  spinner: boolean = true;
-  test$!: Observable<any>;
 
   constructor(
     private wordService: WordService, 
@@ -37,12 +32,10 @@ export class WordComponent implements OnInit {
       if(data.createUser == true){
         this.createUser();
       }
+      else{
+        this.word$ = this.wordService.getWordOfTheDay();
+      }
     })
-
-    this.word$ = this.wordService.getWordOfTheDay();
-    // let fake = [1,2,3]
-    // this.test$ = of(fake).pipe(delay(5000))
-    // this.test$.subscribe(() => this.loader.hide())
 
     this.word$.subscribe(() => this.loader.hide())
   }
@@ -52,7 +45,9 @@ export class WordComponent implements OnInit {
       concatMap(user =>
         this.http.post(environment.apiURL + "/auth/user/" + user?.nickname, "")
         )
-    ).subscribe()
+    ).subscribe(() =>
+        this.word$ = this.wordService.getWordOfTheDay()
+    )
   }
 
   getUserInfo(){
