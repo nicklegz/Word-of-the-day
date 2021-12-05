@@ -56,7 +56,7 @@ namespace word_of_the_day.Controllers
             if(user == null)
                 return NotFound($"User {username} does not exist.");
 
-            if(IsNewWordRequired(user))
+            if(IsNewWordRequired(user) == false)
                 return await _wordRepo.GetExistingWordOfTheDayAsync(user);
 
             var availableWords = await _wordRepo.GetListAvailableWordsAsync(user);
@@ -73,7 +73,7 @@ namespace word_of_the_day.Controllers
         private Boolean IsNewWordRequired(User user)
         {
             TimeSpan diff = DateTime.Now - user.LastUpdated;
-            if(diff.Hours < 24)
+            if(diff.Hours > 23)
             {
                 return true;
             }

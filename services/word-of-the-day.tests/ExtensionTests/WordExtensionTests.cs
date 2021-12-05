@@ -7,74 +7,59 @@ using System.Linq;
 using word_of_the_day.Controllers;
 using Microsoft.Extensions.Configuration;
 using Xunit;
+using word_of_the_day.Extensions;
+using Newtonsoft.Json;
 
 namespace word_of_the_day.tests.ExtensionTests
 {
     public class WordExtensionTests
     {
         private DateTime dtNow = DateTime.Now;
+        private User _mockUser;
+        private Word _mockWord;
+        private PreviouslyUsedWord _mockPreWords;
         private readonly Mock<IConfiguration> mockConfig = new Mock<IConfiguration>();
 
-        // [Fact]
-        public async Task GetUserAsync_ShouldReturnUser()
+        public WordExtensionTests()
         {
-            //Arrange
-            //add mock user
-            User mockUser = new User{
+            _mockUser = new User{
                 Id = Guid.Parse("d8af31a4-f108-425f-a5f0-28d0e566548b"),
                 Username = "nicktest",
                 LastUpdated = dtNow.AddHours(-6),
                 WordOfTheDayId = 1
             };
 
-            Word mockWord = new Word{
+            _mockWord = new Word{
                 WordId = 2,
                 Text = "sad",
                 Definition = "Im sad",
                 Type = "noun"
             };
 
-            PreviouslyUsedWord mockPreWords = new PreviouslyUsedWord{
+            _mockPreWords = new PreviouslyUsedWord{
                 WordId = 1
             };
+        }
 
-            var mockUserExtension = new Mock<IUserRepository>();
-            var mockWordExtension = new Mock<IWordRepository>();
-            mockUserExtension.Setup(userExt => userExt.GetUserAsync(mockUser.Username))
-            .ReturnsAsync(
-                GetTestUsers().FirstOrDefault(
-                    u => u.Username == mockUser.Username
-            ));
-
-            var availableWords = GetAvailableWords();
-
-            mockWordExtension.Setup(
-                ext => ext.GetListAvailableWordsAsync(mockUser))
-                .ReturnsAsync(availableWords);
+        [Fact]
+        public async Task GetListOfWordsAsync_ShouldReturnListOfWords()
+        {
+            //Arrange
+            var testWords = GetTestWords();
+            Mock<IWordRepository> wordRepoMock = new Mock<IWordRepository>();
+            wordRepoMock.Setup(wordExt => wordExt.GetListOfWordsAsync()).ReturnsAsync(GetTestWords());
             
-            mockWordExtension.Setup(
-                ext => ext.GetExistingWordOfTheDayAsync(mockUser))
-                .ReturnsAsync(
-                    GetTestWords().FirstOrDefault(
-                        word => word.WordId == mockUser.WordOfTheDayId
-                    ));
-            
-            
-            mockWordExtension.Setup(
-                ext => ext.GetNewWordOfTheDay(availableWords, availableWords.Count));
-                
-            var controller = new WordController(
-                mockConfig.Object, 
-                mockUserExtension.Object,
-                mockWordExtension.Object);
+            var wordExtension = new WordExtension(wordRepoMock.Object);
 
             //Act
-            var result =  await controller.GetWordOfTheDay(mockUser.Username);
+            var result = await wordExtension.GetListOfWordsAsync();
+            var jsonResult = JsonConvert.SerializeObject(result);
 
             //Assert
-            Assert.Equal(mockWord, result);
-            
+            Assert.Equal(JsonConvert.SerializeObject(testWords), jsonResult);
         }
+
+        
         private List<User> GetTestUsers()
         {
             var users = new List<User>();
