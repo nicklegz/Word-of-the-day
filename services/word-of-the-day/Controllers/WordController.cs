@@ -14,7 +14,6 @@ namespace word_of_the_day.Controllers
         private static readonly Random random = new Random();
         private readonly IUserRepository _userRepo;
         private readonly IWordRepository _wordRepo;
-        private readonly int wordTimeInterval = 24;
 
         public WordController(
             IUserRepository userRepo,
@@ -61,7 +60,5 @@ namespace word_of_the_day.Controllers
 
             return Ok(newWord);
         }        
-
-        
     }
 }

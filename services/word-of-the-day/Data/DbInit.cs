@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using word_of_the_day.Models;
 
-namespace word_of_the_day.Models
+namespace word_of_the_day.Data
 {
     public class DbInit
     {
+        private static readonly Random random = new Random();
+
         public static void Init(WordOfTheDayContext context)
         {
             context.Database.EnsureCreated();
@@ -23,9 +26,13 @@ namespace word_of_the_day.Models
             var wordJson = File.ReadAllText(filePath);
             words = JsonSerializer.Deserialize<List<Word>>(wordJson);
 
-            for(int i = 0; i < 7000; i++)
+            int count = 0;
+            int index;
+            while(count < 5000)
             {
-                context.Words.Add(words[i]);
+                index = random.Next(0, words.Count - 1);
+                context.Words.Add(words[index]);
+                count++;
             }
 
             var users = new List<User>()
