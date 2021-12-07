@@ -20,18 +20,29 @@ namespace word_of_the_day.Repos
             return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         }
 
-        public async Task AddUserAsync(string userId, int newWordId)
+        public async Task AddUserAsync(string username, int newWordId)
         {
             var user = new User()
             {
                 Id = Guid.NewGuid(),
-                Username = userId,
+                Username = username,
                 LastUpdated = DateTime.Now,
                 WordOfTheDayId = newWordId
             };
 
             await _context.Users.AddAsync(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+            if(userEntity == null)
+                return;
+            
+            userEntity.WordOfTheDayId = user.WordOfTheDayId;
+            userEntity.LastUpdated = user.LastUpdated;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,8 +1,5 @@
-using System;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using word_of_the_day.Interfaces;
-using word_of_the_day.Models;
 
 namespace word_of_the_day.Extensions
 {
@@ -23,6 +20,11 @@ namespace word_of_the_day.Extensions
         public async Task AddUserAsync(string userId, int newWordId)
         {
             await _userRepo.AddUserAsync(userId, newWordId);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            await _userRepo.UpdateUserAsync(user);
         }
 
     }

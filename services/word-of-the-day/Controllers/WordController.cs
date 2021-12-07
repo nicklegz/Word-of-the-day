@@ -58,6 +58,11 @@ namespace word_of_the_day.Controllers
 
             Word newWord = _wordRepo.GetNewWordOfTheDay(availableWords, availableWordsCount);
 
+            //update User with new Word of the day
+            user.LastUpdated = DateTime.Now;
+            user.WordOfTheDayId = newWord.WordId;
+            await _userRepo.UpdateUserAsync(user);
+
             return Ok(newWord);
         }        
     }

@@ -7,5 +7,6 @@ namespace word_of_the_day.Interfaces
     {
         Task<User> GetUserAsync(string userId);
         Task AddUserAsync(string userId, int newWordId);
+        Task UpdateUserAsync(User user);
     }
 }
