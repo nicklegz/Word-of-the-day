@@ -12,7 +12,6 @@ namespace word_of_the_day.Controllers
     public class WordController : ControllerBase
     {
         private static readonly Random random = new Random();
-        private readonly Uri _apiEndpoint;
         private readonly IUserRepository _userRepo;
         private readonly IWordRepository _wordRepo;
         private readonly int wordTimeInterval = 24;
@@ -49,7 +48,7 @@ namespace word_of_the_day.Controllers
             if(user == null)
                 return NotFound($"User {username} does not exist.");
 
-            if(IsNewWordRequired(user) == false)
+            if(_wordRepo.IsNewWordRequired(user) == false)
                 return await _wordRepo.GetExistingWordOfTheDayAsync(user);
 
             var availableWords = await _wordRepo.GetListAvailableWordsAsync(user);
@@ -63,15 +62,6 @@ namespace word_of_the_day.Controllers
             return Ok(newWord);
         }        
 
-        private Boolean IsNewWordRequired(User user)
-        {
-            TimeSpan diff = DateTime.Now - user.LastUpdated;
-            if(diff.Hours > wordTimeInterval)
-            {
-                return true;
-            }
-
-            return false;
-        }
+        
     }
 }

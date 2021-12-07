@@ -25,7 +25,7 @@ namespace word_of_the_day.tests.ExtensionTests
             _mockUser = new User{
                 Id = Guid.Parse("d8af31a4-f108-425f-a5f0-28d0e566548b"),
                 Username = "nicktest",
-                LastUpdated = dtNow.AddHours(-6),
+                LastUpdated = dtNow.AddHours(-25),
                 WordOfTheDayId = 1
             };
 
@@ -57,6 +57,40 @@ namespace word_of_the_day.tests.ExtensionTests
 
             //Assert
             Assert.Equal(JsonConvert.SerializeObject(testWords), jsonResult);
+        }
+
+        [Fact]
+        public void IsNewWordRequired_ShouldReturnFalse_LessThanADayHasPassed()
+        {
+            //Arrange
+            Mock<IWordRepository> wordRepoMock = new Mock<IWordRepository>();
+            _mockUser.LastUpdated = dtNow.AddHours(-6);
+            wordRepoMock.Setup(x => x.IsNewWordRequired(_mockUser));
+
+            var wordExtension = new WordExtension(wordRepoMock.Object);
+
+            //Act
+            var result = wordExtension.IsNewWordRequired(_mockUser);
+
+            //Assert
+            Assert.Equal(false, result);
+        }
+
+        [Fact]
+        public void IsNewWordRequired_ShouldReturnTrue_MoreThanADayHasPassed()
+        {
+            //Arrange
+            Mock<IWordRepository> wordRepoMock = new Mock<IWordRepository>();
+            // _mockUser.LastUpdated = dtNow.AddHours(-25);
+            wordRepoMock.Setup(x => x.IsNewWordRequired(_mockUser));
+
+            var wordExtension = new WordExtension(wordRepoMock.Object);
+
+            //Act
+            var result = wordExtension.IsNewWordRequired(_mockUser);
+
+            //Assert
+            Assert.Equal(true, result);
         }
 
         

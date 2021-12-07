@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using word_of_the_day.Interfaces;
@@ -30,6 +31,18 @@ namespace word_of_the_day.Extensions
         public Word GetNewWordOfTheDay(List<Word> words, int wordsCount)
         {
             return _wordRepo.GetNewWordOfTheDay(words, wordsCount);
+        }
+
+        public Boolean IsNewWordRequired(User user)
+        {
+            
+            TimeSpan diff = DateTime.Now - user.LastUpdated;
+            if(diff.TotalDays > 1)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

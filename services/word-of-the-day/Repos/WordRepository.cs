@@ -45,5 +45,17 @@ namespace word_of_the_day.Extensions
             int index = random.Next(0, wordsCount - 1);
             return words[index];
         }
+
+        public Boolean IsNewWordRequired(User user)
+        {
+            TimeSpan diff = DateTime.Now - user.LastUpdated;
+            if(diff.TotalDays > 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }
