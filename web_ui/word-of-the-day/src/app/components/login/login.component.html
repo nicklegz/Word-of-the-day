@@ -1,0 +1,29 @@
+<div *ngIf="(loading$ | async)! == false" >
+    <div class="container">
+        <form (ngSubmit)="onLogin()" #loginButton>
+            <div class="form-group">
+                <div class="card">
+                    <h5 class="card-header text-center">Welcome back!</h5>
+                    <div class="card-body">
+                        <div class="card-title text-center">
+                            <img src="../assets/Screen Shot 2021-12-07 at 6.35.09 PM.png" >
+                        </div>
+                        <label for="loginInput" class="form-label">Username</label>
+                        <input type="text" id="loginInput" class="form-control ng-untouched ng-pristine ng-valid" placeholder="something cool" aria-label="Username"
+                            required [(ngModel)] = "loginForm.username" name="username" #username="ngModel">
+                            <div [hidden]="username.valid || username.pristine" class="alert alert-danger">
+                                Username is required
+                            </div>
+                    </div>
+                    <button type="submit" class="card-footer btn btn-outline-dark border-0" [disabled]="!loginButton.form.valid">
+                        Sign in
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <app-spinner *ngIf= "(loading$ | async)! == true"></app-spinner>
+</div>

@@ -12,6 +12,8 @@ import { ErrorComponent } from './components/error/error.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { LoginComponent } from './components/login/login.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,13 +22,15 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     WordComponent,
     BottomNavComponent,
     ErrorComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    LoginComponent
   ],
   exports:[
     SpinnerComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule,
     AuthModule.forRoot({

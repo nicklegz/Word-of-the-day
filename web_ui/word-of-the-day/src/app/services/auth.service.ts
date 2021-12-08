@@ -20,6 +20,4 @@ export class AuthService {
   getUserInfo(){
     return this.http.get<UserInfo>(this.authUrl + "/user");
   }
-
-  
 }
