@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoadingService } from 'src/app/services/loading.service';
-
-interface login{
-  username: string;
-}
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,25 +11,26 @@ interface login{
 
 export class LoginComponent implements OnInit{
 
-  constructor(private loader: LoadingService) {}
-
   loading$!: Observable<boolean>;
+  form: any;
 
-  loginForm: login = {
-    username: ""
-  }
+  constructor(private loader: LoadingService, private fb: FormBuilder) {}
 
   ngOnInit(){
     this.loading$ = this.loader.loading$;
+
+    this.form! = this.fb.group({
+      "username": ["", Validators.required]
+    })
+
     this.loader.hide();
   }
 
   onLogin(){
-    if(this.loginForm.username != ""){
+    if(this.form.username != ""){
       this.loader.show();
       //call backend to validate username
     }
 
   }
-
 }
