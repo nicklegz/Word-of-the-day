@@ -10,11 +10,13 @@ using Newtonsoft.Json.Serialization;
 using word_of_the_day.Interfaces;
 using word_of_the_day.Extensions;
 using word_of_the_day.Repos;
+using word_of_the_day.Config;
 
 namespace word_of_the_day
 {
     public class Startup
     {
+        private static readonly string corsPolicyName = "CorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,18 +26,8 @@ namespace word_of_the_day
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins(
-                        "https://worddujour.herokuapp.com", 
-                        "http://worddujour.herokuapp.com"
-                    )
-                    .AllowAnyMethod()
-                    .AllowCredentials()
-                    .AllowAnyHeader());
-            });
+            //configure Cors policy
+            CorsPolicyConfig.ConfigureCorsPolicy(services, corsPolicyName);
 
             services.AddDbContext<WordOfTheDayContext>(
                 options => options.UseNpgsql(
@@ -73,7 +65,7 @@ namespace word_of_the_day
             
             app.UseRouting();
 
-            app.UseCors("CorsPolicy");
+            app.UseCors(corsPolicyName);
 
             app.UseAuthentication();
 

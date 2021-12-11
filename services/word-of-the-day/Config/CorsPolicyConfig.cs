@@ -2,17 +2,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace word_of_the_day.Config
 {
-    public class CorsPolicyConfig
+    public static class CorsPolicyConfig
     {
-        private readonly IServiceCollection _services;
-        public CorsPolicyConfig(IServiceCollection services)
+        public static void ConfigureCorsPolicy(IServiceCollection services, string policyName)
         {
-            _services = services;
-        }
-
-        public void ConfigureCorsPolicy()
-        {
-            
+            services.AddCors(options =>
+            {
+                options.AddPolicy(policyName,
+                    builder => builder.WithOrigins(
+                        "https://worddujour.herokuapp.com", 
+                        "http://worddujour.herokuapp.com",
+                        "http://localhost:4200"
+                    )
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .AllowAnyHeader());
+            });
         }
     }
 }

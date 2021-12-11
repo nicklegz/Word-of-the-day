@@ -24,23 +24,23 @@ namespace word_of_the_day.Controllers
             _wordRepo = wordRepo;
         }
 
-        [Route("[controller]/login")]
-        public async Task Login(string returnUrl = "http://www.worddujour.ca")
-        {
-            await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl});
-        }
+        // [Route("[controller]/login")]
+        // public async Task<ActionResult> Login(string username)
+        // {
+        //     User user = await _userRepo.GetUserAsync(username);
+        //     if(user == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-        [Authorize]
-        [Route("[controller]/logout")]
-        public async Task Logout()
-        {
-            await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
-            {
-                RedirectUri = Url.Action("Index", "Home")
-            });
-            
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
+        //     return Ok();
+        // }
+
+        // [Authorize]
+        // [Route("[controller]/logout")]
+        // public async Task Logout()
+        // {
+        // }
 
         [HttpGet]
         [Route("[controller]/user/{username}")]
@@ -53,6 +53,7 @@ namespace word_of_the_day.Controllers
             {
                 createUser = true;
             }
+
             else
             {
                 createUser = false;
