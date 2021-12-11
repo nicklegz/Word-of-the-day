@@ -1,30 +1,26 @@
 <div *ngIf="(loading$ | async)! == false" >
     <div class="container">
-        <form [formGroup]="form" (ngSubmit)="onLogin()">
+        <form [formGroup]="form" (ngSubmit)="onSignUp()">
             <div class="form-group has-feedback has-feedback-left">
                 <div class="card">
-                    <h5 class="card-header text-center">Welcome back!</h5>
+                    <h5 class="card-header text-center">Welcome to Word of the day!</h5>
                     <div class="card-body">
                         <div class="card-title text-center">
                             <img src="../assets/Screen Shot 2021-12-07 at 6.35.09 PM.png" >
                         </div>
-                        <div class="form-inputs">
-                            <input type="text" id="loginInput" class="form-control border-right-0" aria-label="Username" placeholder="Username" (input)="onUserInput()" formControlName="username">
-                        </div>
-                        <br><br>
-                        <div class="text-center">
-                            <p>Don't have an account?
-                            <a type="button" class="btn-sign-up" [routerLink]="['/sign-up']">
-                                Sign up here.
-                            </a>
-                            </p>
-                        </div>
+
+                        <label for="signupInput" class="form-label">Username</label>
+                        <input type="text" id="signupInput" class="form-control border-right-0" aria-label="Username" placeholder="Username" (input)="onUserInput()" formControlName="username">
+                        
+                        <label for="signupInput" class="form-label">Email</label>
+                        <input type="email" id="signupInput" class="form-control border-right-0" aria-label="Email" placeholder="Email" (input)="onUserInput()" formControlName="email">
+
                         <div [hidden]="userException == ''" class="alert alert-danger">
                             {{userException}}
                        </div>
                     </div>
                     <button type="submit" class="card-footer btn-lg btn-outline-dark border-0" [disabled]="!form.valid">
-                        Sign in
+                        Sign up
                     </button>
                 </div>
             </div>

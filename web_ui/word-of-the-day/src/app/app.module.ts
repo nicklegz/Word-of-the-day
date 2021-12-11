@@ -7,13 +7,14 @@ import { WordComponent } from './components/word/word.component';
 import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './services/auth.interceptor';
+// import { AuthInterceptor } from './services/auth.interceptor';
 import { ErrorComponent } from './components/error/error.component';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { LoginComponent } from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { SignupComponent } from './components/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     BottomNavComponent,
     ErrorComponent,
     SpinnerComponent,
-    LoginComponent
+    LoginComponent,
+    SignupComponent
   ],
   exports:[
     SpinnerComponent
@@ -40,11 +42,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     }),
   ],
   providers: [
-    {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-    }
+    // {
+    // provide: HTTP_INTERCEPTORS,
+    // useClass: AuthInterceptor,
+    // multi: true,
+    // }
   ],
   bootstrap: [AppComponent]
 })

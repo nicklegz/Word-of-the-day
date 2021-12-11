@@ -1,0 +1,22 @@
+.container{
+    max-width: 20rem;
+    margin-top: 5rem;
+}
+
+.card{
+    min-height: 25rem;
+    min-width: 25rem;
+}
+
+img{
+    max-width: 12rem;
+}
+
+input{
+    margin-bottom: 1rem;
+}
+
+.btn-sign-up{
+    color: blue;
+}
+

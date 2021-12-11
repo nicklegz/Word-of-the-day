@@ -5,7 +5,16 @@
 
 .card{
     min-height: 25rem;
-    min-width: 20rem;
+    min-width: 25rem;
+}
+
+.form-inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 3rem;
+    margin-right: 3rem;
 }
 
 img{
@@ -14,4 +23,8 @@ img{
 
 input{
     margin-bottom: 0;
+}
+
+.btn-sign-up{
+    color: blue;
 }
