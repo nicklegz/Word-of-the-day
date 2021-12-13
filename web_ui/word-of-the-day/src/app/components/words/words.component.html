@@ -1,0 +1,21 @@
+<div class="container-fluid">
+    <div *ngIf="(loading$ | async)! == false" >
+        <ul *ngIf="words$ | async as words">
+            <div class="no-previously-used-words" *ngIf="words?.length == 0">
+                <h3>No previously viewed words.</h3>
+            </div>
+            <li *ngFor="let word of words">
+                <div class="card">
+                    <div class="card-body">
+                    <h2 class="card-title">{{word.Text}}</h2>
+                    <p class="card-text">{{word.Type}}</p>
+                    <p class="card-text">{{word.Definition}}</p>
+                    </div>
+                </div> 
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container-fluid">
+<app-spinner *ngIf= "(loading$ | async)! == true"></app-spinner>
+</div>

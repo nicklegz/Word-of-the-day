@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Word } from '../../interfaces/word.interface';
 import { WordService } from '../../services/word.service';
@@ -12,10 +13,12 @@ import { WordService } from '../../services/word.service';
 export class WordComponent implements OnInit {
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
+  username: string = "";
 
   constructor(
     private wordService: WordService,
-    private loader: LoadingService) 
+    private loader: LoadingService,
+    private auth: AuthService) 
     {}
 
   ngOnInit(): void {

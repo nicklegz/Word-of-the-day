@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserInfo } from '../interfaces/userAuth.interface';
 
@@ -11,9 +11,15 @@ import { UserInfo } from '../interfaces/userAuth.interface';
 export class AuthService {
 
   authUrl = environment.apiURL + "/auth";
-  public isAuthenticated = false;
+  private _isAuthenticated = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$ = this._isAuthenticated.asObservable();
+  public username: Observable<string> = of("");
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router:Router) { }
+
+  setUsername(username: string){
+    this.username = of(username);
+  }
 
   getUserInfo(username: string){
     return this.http.get<UserInfo>(this.authUrl + "/user/" + username);
@@ -24,11 +30,13 @@ export class AuthService {
     }
 
   setIsAuthenticated(flag: boolean) {
-      this.isAuthenticated = flag;
+      this._isAuthenticated.next(flag);
     }
 
   signOut(){
-    this.setIsAuthenticated(false);
+    this._isAuthenticated.next(false);
+    this.router.navigate(['login'])
   }
-  }
+
+}
 

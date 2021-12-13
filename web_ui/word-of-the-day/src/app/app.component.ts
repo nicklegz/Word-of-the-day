@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { of } from 'rxjs';
 import { UserInfo } from './interfaces/userAuth.interface';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +12,9 @@ export class AppComponent implements OnInit{
   title = 'word-of-the-day';
   userInfo!: UserInfo;
 
-  constructor(){}
+  constructor(private auth: AuthService){}
 
   ngOnInit(): void{
-    
+    this.auth.username = of(localStorage.getItem("username")!);
   }
 }

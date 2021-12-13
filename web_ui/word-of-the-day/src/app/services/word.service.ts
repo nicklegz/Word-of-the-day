@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
 import { Word } from '../interfaces/word.interface';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { concatMap, finalize, share, take, tap} from 'rxjs/operators';
-import { AuthService } from '@auth0/auth0-angular';
-import { LoadingService } from './loading.service';
+import { AuthService } from './auth.service';
 
 const baseApiUrl = environment.apiURL;
 
@@ -14,16 +11,25 @@ const baseApiUrl = environment.apiURL;
 })
 
 export class WordService {
+  private username!: string;
 
   constructor(
     private http: HttpClient, 
-    private auth: AuthService) {}
+    private auth: AuthService) {
+      this.auth.username.subscribe(username => {
+        this.username = username;
+      })
+    }
 
   public getWordOfTheDay(){
-    return this.auth.user$
-    .pipe(
-      concatMap(user =>
-        this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + user?.email)),
-        );
+    return this.http.get<Word>(baseApiUrl + '/word/word-of-the-day/' + this.username)
+  }
+
+   public getPreviouslyUsedWords() {
+    return this.http.get<Array<Word>>(baseApiUrl + '/word/previously-used-words/' + this.username)
+  }
+
+  public getSavedWords(){
+    
   }
 }
