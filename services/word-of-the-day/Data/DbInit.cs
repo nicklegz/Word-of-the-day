@@ -65,7 +65,7 @@ namespace word_of_the_day.Data
                 {
                     Id = 1,
                     WordId = 1,
-                    UserId = "17927udiud2981"
+                    Username = "17927udiud2981"
                 }
             };
 

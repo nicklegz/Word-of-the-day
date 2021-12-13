@@ -24,24 +24,6 @@ namespace word_of_the_day.Controllers
             _wordRepo = wordRepo;
         }
 
-        // [Route("[controller]/login")]
-        // public async Task<ActionResult> Login(string username)
-        // {
-        //     User user = await _userRepo.GetUserAsync(username);
-        //     if(user == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok();
-        // }
-
-        // [Authorize]
-        // [Route("[controller]/logout")]
-        // public async Task Logout()
-        // {
-        // }
-
         [HttpGet]
         [Route("[controller]/user/{username}")]
         public async Task<ActionResult> GetUser(string userName)
@@ -70,6 +52,7 @@ namespace word_of_the_day.Controllers
             int wordCount = availableWords.Count();
             int newWordId = _wordRepo.GetNewWordOfTheDay(availableWords, wordCount).WordId;
             await _userRepo.AddUserAsync(userName, newWordId);
+            await _wordRepo.AddPreviouslyUsedWordAsync(userName, newWordId);
         }
     }
 }

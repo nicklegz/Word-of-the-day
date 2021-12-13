@@ -10,6 +10,8 @@ namespace word_of_the_day.Interfaces
         Task<List<Word>> GetListAvailableWordsAsync(User user);
         Task<Word> GetExistingWordOfTheDayAsync(User user);
         Word GetNewWordOfTheDay(List<Word> words, int wordCount);
+        Task<List<Word>> GetPreviouslyUsedWordsAsync(string username);
+        Task AddPreviouslyUsedWordAsync(string username, int wordId);
         Boolean IsNewWordRequired(User user);
     }
 }

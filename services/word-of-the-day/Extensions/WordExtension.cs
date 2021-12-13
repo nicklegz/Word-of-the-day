@@ -44,5 +44,15 @@ namespace word_of_the_day.Extensions
 
             return false;
         }
+
+        public async Task<List<Word>> GetPreviouslyUsedWordsAsync(string username)
+        {
+            return await _wordRepo.GetPreviouslyUsedWordsAsync(username);
+        }
+
+        public async Task AddPreviouslyUsedWordAsync(string username, int wordId)
+        {
+            await _wordRepo.AddPreviouslyUsedWordAsync(username, wordId);
+        }
     }
 }

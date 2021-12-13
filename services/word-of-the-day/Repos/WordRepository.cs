@@ -28,7 +28,7 @@ namespace word_of_the_day.Extensions
             var query = from word in _context.Set<Word>()
                         from p in _context.Set<PreviouslyUsedWord>().Where(
                             p => word.WordId == p.WordId && 
-                            p.UserId == user.Username).DefaultIfEmpty()
+                            p.Username == user.Username).DefaultIfEmpty()
                         where p == null
                         select word;
 
@@ -55,6 +55,28 @@ namespace word_of_the_day.Extensions
             }
 
             return false;
+        }
+
+        public async Task<List<Word>> GetPreviouslyUsedWordsAsync(string username)
+        {
+            var query = from word in _context.Set<Word>()
+                        from p in _context.Set<PreviouslyUsedWord>().Where(
+                            p => word.WordId == p.WordId && 
+                            p.Username == username).DefaultIfEmpty()
+                        where p != null
+                        select word;
+
+            return await query.ToListAsync();
+        }
+
+        public async Task AddPreviouslyUsedWordAsync(string username, int wordId)
+        {
+            await _context.PreviouslyUsedWords.AddAsync(new PreviouslyUsedWord{
+                Username = username,
+                WordId = wordId
+            });
+
+            await _context.SaveChangesAsync();
         }
 
     }

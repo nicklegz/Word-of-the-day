@@ -15,9 +15,7 @@ namespace word_of_the_day.Controllers
         private readonly IUserRepository _userRepo;
         private readonly IWordRepository _wordRepo;
 
-        public WordController(
-            IUserRepository userRepo,
-            IWordRepository wordRepo)
+        public WordController(IUserRepository userRepo, IWordRepository wordRepo)
         {
             _userRepo = userRepo;
             _wordRepo = wordRepo;
@@ -37,7 +35,7 @@ namespace word_of_the_day.Controllers
             return Ok(words);
         }
 
-        [HttpGet("[controller]/word-of-the-day/{userName}")]
+        [HttpGet("[controller]/word-of-the-day/{username}")]
         // [Authorize] 
         // [RequiredScope("read:word")]
         public async Task<ActionResult<Word>> GetWordOfTheDay(string username)
@@ -62,8 +60,15 @@ namespace word_of_the_day.Controllers
             user.LastUpdated = DateTime.Now;
             user.WordOfTheDayId = newWord.WordId;
             await _userRepo.UpdateUserAsync(user);
+            await _wordRepo.AddPreviouslyUsedWordAsync(username, newWord.WordId);
 
             return Ok(newWord);
         }        
+
+        [HttpGet("[controller]/previously-used-words/{username}")]
+        public async Task<List<Word>> GetPreviouslyUsedWords(string username)
+        {
+            return await _wordRepo.GetPreviouslyUsedWordsAsync(username);
+        }
     }
 }
