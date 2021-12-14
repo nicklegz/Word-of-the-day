@@ -28,29 +28,29 @@ export class LoginComponent implements OnInit{
 
   ngOnInit(){
     this.loading$ = this.loader.loading$;
-
+    this.loader.hide();
     this.form = this.fb.group({
       username: ["", Validators.required]
     })
 
-    this.loader.hide();
-
     this.username = localStorage.getItem("username")!;
     if(this.username != null && this.username != ""){
+      this.auth.setUsername(this.username);
       this.setAuthenticatedAndNavHome();
     }
   }
 
+  //event that triggered when user clicks on Sign in button
   onLogin(){
     this.loader.show();
-    this.auth.getUserInfo(this.form.value.username).subscribe(
-      data =>{
+    this.auth.getUserInfo(this.form.value.username).subscribe(data =>{
       if(data.createUser == true){
           this.userException = "Username does not exist."
           this.loader.hide()
       }
       else{
         localStorage.setItem("username", this.form.value.username);
+        this.auth.setUsername(this.form.value.username);
         this.setAuthenticatedAndNavHome();
       }
     },
@@ -61,10 +61,12 @@ export class LoginComponent implements OnInit{
     })
   }
 
+  //event triggered any time the user types into the username field
   onUserInput(){
     this.userException = "";
   }
 
+  //sets the isAuthenticated flag to true and navigates to home page
   private setAuthenticatedAndNavHome(){
     this.auth.setIsAuthenticated(true);
     this.router.navigate(['/home'])

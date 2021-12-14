@@ -29,7 +29,7 @@ export class WordService {
     return this.http.get<Array<Word>>(baseApiUrl + '/word/previously-used-words/' + this.username)
   }
 
-  public getSavedWords(){
+  public getLikedWords(){
     
   }
 }

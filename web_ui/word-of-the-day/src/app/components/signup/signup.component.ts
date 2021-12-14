@@ -22,8 +22,7 @@ export class SignupComponent implements OnInit {
     private loader: LoadingService,
     private fb: FormBuilder,
     private auth: AuthService,
-    private router: Router,
-    private wordService: WordService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -47,8 +46,10 @@ export class SignupComponent implements OnInit {
 
       this.auth.createUser(this.form.value.username).subscribe(()=>{
           this.auth.setIsAuthenticated(true);
+          this.auth.setUsername(this.form.value.username);
+          localStorage.setItem("username", this.form.value.username);
           this.loader.hide();
-          this.router.navigate(['word']);
+          this.router.navigate(['home']);
         })
     },
       (err : HttpErrorResponse) =>{

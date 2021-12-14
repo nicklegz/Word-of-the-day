@@ -1,3 +1,7 @@
 .card-body{
   margin-left: 5rem;
 }
+
+.btn:focus {
+  box-shadow: none;
+}

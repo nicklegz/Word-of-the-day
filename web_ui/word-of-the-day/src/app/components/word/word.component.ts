@@ -14,6 +14,7 @@ export class WordComponent implements OnInit {
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
   username: string = "";
+  liked: boolean = false;
 
   constructor(
     private wordService: WordService,
@@ -25,5 +26,9 @@ export class WordComponent implements OnInit {
     this.loading$ = this.loader.loading$;
     this.word$ = this.wordService.getWordOfTheDay();
     this.word$.subscribe(() => this.loader.hide())
+  }
+
+  onClickLike(){
+    this.liked = !this.liked;
   }
 }

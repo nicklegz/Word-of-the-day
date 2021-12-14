@@ -17,6 +17,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SignupComponent } from './components/signup/signup.component';
 import { AccountComponent } from './components/account/account.component';
 import { WordsComponent } from './components/words/words.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { WordsComponent } from './components/words/words.component';
     LoginComponent,
     SignupComponent,
     AccountComponent,
-    WordsComponent
+    WordsComponent,
+    AuthComponent
   ],
   exports:[
     SpinnerComponent

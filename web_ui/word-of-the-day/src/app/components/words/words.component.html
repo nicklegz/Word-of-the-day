@@ -1,10 +1,11 @@
 <div class="container-fluid">
+    <h1 class="viewname">{{viewname}}</h1>
     <div *ngIf="(loading$ | async)! == false" >
-        <ul *ngIf="words$ | async as words">
+        <ul class="list-group" *ngIf="words$ | async as words">
             <div class="no-previously-used-words" *ngIf="words?.length == 0">
                 <h3>No previously viewed words.</h3>
             </div>
-            <li *ngFor="let word of words">
+            <li class="list-group-item" *ngFor="let word of words">
                 <div class="card">
                     <div class="card-body">
                     <h2 class="card-title">{{word.Text}}</h2>

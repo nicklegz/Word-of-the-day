@@ -14,6 +14,7 @@ export class WordsComponent implements OnInit {
 
   words$!: Observable<Word[]>;
   loading$!: Observable<boolean>;
+  viewname: string = "";
 
   constructor(
     private wordService: WordService, 
@@ -30,9 +31,11 @@ export class WordsComponent implements OnInit {
     switch(listname){
       case "previously-viewed-words":
         this.words$ = this.getPreviouslyViewedWords()!;
+        this.viewname = "Previously Viewed Words";
         break;
-      case "saved-words":
-        this.words$ = this.getSavedWords()!;
+      case "liked-words":
+        this.words$ = this.getLikedWords()!;
+        this.viewname = "My Liked Words";
         break;
     }
 
@@ -43,8 +46,8 @@ export class WordsComponent implements OnInit {
     return this.wordService.getPreviouslyUsedWords();
   }
 
-  private getSavedWords(){
-     this.wordService.getSavedWords();
+  private getLikedWords(){
+     this.wordService.getLikedWords();
   }
 
 }
