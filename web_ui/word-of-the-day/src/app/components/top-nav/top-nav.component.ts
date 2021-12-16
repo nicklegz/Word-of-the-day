@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable} from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { WordService } from 'src/app/services/word.service';
 
 @Component({
   selector: 'app-top-nav',
@@ -14,19 +15,28 @@ export class TopNavComponent implements OnInit{
 
   constructor(
     private auth: AuthService,
-     private router: Router) { 
+    private router: Router,
+    private wordService: WordService) { 
   }
 
   ngOnInit(){
     this.isAuthenticated$ = this.auth.isAuthenticated$;
   }
 
-  signOut(){
-    localStorage.removeItem("username");
-    this.auth.signOut();
+  onClickPreviousWords(){
+    this.wordService.getPreviouslyUsedWords().subscribe(words => this.wordService.setListOfWords(words));
+    this.wordService.setListWordsViewName("Previously Viewed Words");
+    this.router.navigate(['/words/previously-viewed-words']);
   }
 
-  goToAccount(){
-    this.router.navigate(['account'])
+  onClickLikedWords(){
+    this.wordService.getLikedWords().subscribe(words => this.wordService.setListOfWords(words));
+    this.wordService.setListWordsViewName("Liked Words");
+    this.router.navigate(['/words/liked-words']);
+  }
+
+  signOut(){
+    this.auth.removeUsername();
+    this.auth.signOut();
   }
 }

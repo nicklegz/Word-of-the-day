@@ -70,5 +70,18 @@ namespace word_of_the_day.Controllers
         {
             return await _wordRepo.GetPreviouslyUsedWordsAsync(username);
         }
+
+        [HttpGet("[controller]/liked-words/{username}")]
+        public async Task<List<Word>> GetLikedWords(string username)
+        {
+            return await _wordRepo.GetLikedWordsAsync(username);
+        }
+
+        [HttpPost("[controller]/liked-words/{username}")]
+        public async Task<IActionResult> AddLikedWord(string username, [FromBody] int wordId)
+        {
+            await _wordRepo.AddLikedWordAsync(username, wordId);
+            return Ok();
+        }
     }
 }

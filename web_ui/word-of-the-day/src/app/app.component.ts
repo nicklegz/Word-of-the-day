@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { of } from 'rxjs';
 import { UserInfo } from './interfaces/userAuth.interface';
 import { AuthService } from './services/auth.service';
 
@@ -15,6 +14,6 @@ export class AppComponent implements OnInit{
   constructor(private auth: AuthService){}
 
   ngOnInit(): void{
-    this.auth.username = of(localStorage.getItem("username")!);
+    this.auth.username = localStorage.getItem("username")!;
   }
 }

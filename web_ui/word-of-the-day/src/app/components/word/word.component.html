@@ -1,20 +1,22 @@
-<div class="container-fluid" *ngIf="(loading$ | async)! == false">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">{{(word$ | async)?.Text}}</h2>
-            <p class="card-text">{{(word$ | async)?.Type}}</p>
-            <p class="card-text">{{(word$ | async)?.Definition}}</p>
-            <button type="button" class="btn btn-lg" (click)="onClickLike()">
-              <div *ngIf="liked == true">
-                <i class="bi bi-heart-fill"></i>
-              </div>
-              <div *ngIf="liked == false">
-                <i class="bi bi-heart"></i>
-              </div>
-            </button>
-          </div>
-        </div> 
-</div>
-<div class="container-fluid" *ngIf= "(loading$ | async)! == true">
-  <app-spinner></app-spinner>
+<div *ngIf="isAuthenticated | async">
+  <div class="container-fluid" *ngIf="(loading$ | async)! == false">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">{{(word$ | async)?.Text}}</h2>
+              <p class="card-text">{{(word$ | async)?.Type}}</p>
+              <p class="card-text">{{(word$ | async)?.Definition}}</p>
+              <button type="button" class="btn btn-lg" (click)="onClickLike()">
+                <div *ngIf="liked == true">
+                  <i class="bi bi-heart-fill"></i>
+                </div>
+                <div *ngIf="liked == false">
+                  <i class="bi bi-heart"></i>
+                </div>
+              </button>
+            </div>
+          </div> 
+  </div>
+  <div class="container-fluid" *ngIf= "(loading$ | async)! == true">
+    <app-spinner></app-spinner>
+  </div>
 </div>

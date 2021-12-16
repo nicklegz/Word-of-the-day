@@ -12,6 +12,8 @@ namespace word_of_the_day.Interfaces
         Word GetNewWordOfTheDay(List<Word> words, int wordCount);
         Task<List<Word>> GetPreviouslyUsedWordsAsync(string username);
         Task AddPreviouslyUsedWordAsync(string username, int wordId);
+        Task<List<Word>> GetLikedWordsAsync(string username);
+        Task AddLikedWordAsync(string username, int wordId);
         Boolean IsNewWordRequired(User user);
     }
 }

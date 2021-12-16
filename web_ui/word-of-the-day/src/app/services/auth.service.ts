@@ -13,12 +13,17 @@ export class AuthService {
   authUrl = environment.apiURL + "/auth";
   private _isAuthenticated = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this._isAuthenticated.asObservable();
-  public username: Observable<string> = of("");
+  public username: string = "";
 
   constructor(private http: HttpClient, private router:Router) { }
 
   setUsername(username: string){
-    this.username = of(username);
+    this.username = username;
+  }
+
+  removeUsername(){
+    localStorage.removeItem("username");
+    this.username = "";
   }
 
   getUserInfo(username: string){

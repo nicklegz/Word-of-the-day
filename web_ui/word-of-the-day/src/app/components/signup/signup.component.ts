@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
-import { WordService } from 'src/app/services/word.service';
 
 @Component({
   selector: 'app-signup',

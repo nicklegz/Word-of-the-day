@@ -79,5 +79,27 @@ namespace word_of_the_day.Extensions
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Word>> GetLikedWordsAsync(string username)
+        {
+            var query = from word in _context.Set<Word>()
+                        from p in _context.Set<LikedWord>().Where(
+                            p => word.WordId == p.WordId && 
+                            p.Username == username).DefaultIfEmpty()
+                        where p != null
+                        select word;
+
+            return await query.ToListAsync();
+        }
+
+        public async Task AddLikedWordAsync(string username, int wordId)
+        {
+            await _context.LikedWords.AddAsync(new LikedWord{
+                Username = username,
+                WordId = wordId
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

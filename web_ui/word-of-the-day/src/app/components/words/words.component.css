@@ -1,8 +1,8 @@
-.no-previously-used-words{
+.no-words{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 15rem;
+    margin-top: 12rem;
 }
 
 .viewname{

@@ -15,12 +15,14 @@ export class WordComponent implements OnInit {
   loading$!: Observable<boolean>;
   username: string = "";
   liked: boolean = false;
+  isAuthenticated!: Observable<boolean>;
 
   constructor(
     private wordService: WordService,
     private loader: LoadingService,
-    private auth: AuthService) 
-    {}
+    private auth: AuthService){
+      this.isAuthenticated =  this.auth.isAuthenticated$;
+    }
 
   ngOnInit(): void {
     this.loading$ = this.loader.loading$;

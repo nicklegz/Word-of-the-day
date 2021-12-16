@@ -54,5 +54,15 @@ namespace word_of_the_day.Extensions
         {
             await _wordRepo.AddPreviouslyUsedWordAsync(username, wordId);
         }
+
+        public async Task<List<Word>> GetLikedWordsAsync(string username)
+        {
+            return await _wordRepo.GetLikedWordsAsync(username);
+        }
+
+        public async Task AddLikedWordAsync(string username, int wordId)
+        {
+            await _wordRepo.AddLikedWordAsync(username, wordId);
+        }
     }
 }
