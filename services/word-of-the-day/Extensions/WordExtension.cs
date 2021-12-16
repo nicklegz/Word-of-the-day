@@ -60,9 +60,19 @@ namespace word_of_the_day.Extensions
             return await _wordRepo.GetLikedWordsAsync(username);
         }
 
+        public async Task<bool> GetIsLikedWordOfTheDayAsync(string username, int wordId)
+        {
+            return await _wordRepo.GetIsLikedWordOfTheDayAsync(username, wordId);
+        }
+
         public async Task AddLikedWordAsync(string username, int wordId)
         {
             await _wordRepo.AddLikedWordAsync(username, wordId);
+        }
+
+        public async Task DeleteLikedWordAsync(string username, int wordId)
+        {
+            await _wordRepo.DeleteLikedWordAsync(username, wordId);
         }
     }
 }

@@ -77,10 +77,23 @@ namespace word_of_the_day.Controllers
             return await _wordRepo.GetLikedWordsAsync(username);
         }
 
+        [HttpGet("[controller]/liked-words/{username}/{wordId}")]
+        public async Task<bool> GetIsLikedWordOfTheDay(string username, int wordId)
+        {
+            return await _wordRepo.GetIsLikedWordOfTheDayAsync(username, wordId);
+        }
+
         [HttpPost("[controller]/liked-words/{username}")]
         public async Task<IActionResult> AddLikedWord(string username, [FromBody] int wordId)
         {
             await _wordRepo.AddLikedWordAsync(username, wordId);
+            return Ok();
+        }
+
+        [HttpDelete("[controller]/liked-words/{username}/{wordId}")]
+        public async Task<IActionResult> DeleteLikedWord(string username, int wordId)
+        {
+            await _wordRepo.DeleteLikedWordAsync(username, wordId);
             return Ok();
         }
     }

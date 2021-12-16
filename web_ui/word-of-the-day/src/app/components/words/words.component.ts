@@ -18,16 +18,14 @@ export class WordsComponent implements OnInit {
 
   constructor(
     private wordService: WordService, 
-    private activatedRoute: ActivatedRoute,
     private loader: LoadingService) {
   }
 
   ngOnInit(): void {
     this.loading$ = this.loader.loading$;
     this.loader.show();
-    this.viewname$ = this.wordService.listWordsViewName;
-    this.words$ = this.wordService.listOfWords;
+    this.viewname$ = this.wordService.listWordsViewName$;
+    this.words$ = this.wordService.listOfWords$;
     this.words$.subscribe(() => this.loader.hide());
   }
-
 }

@@ -91,6 +91,16 @@ namespace word_of_the_day.Extensions
             return await query.ToListAsync();
         }
 
+        public async Task<bool> GetIsLikedWordOfTheDayAsync(string username, int wordId)
+        {
+            var isLiked = await _context.LikedWords.FirstOrDefaultAsync(word => word.Username == username && word.WordId == wordId);
+            if(isLiked != null){
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task AddLikedWordAsync(string username, int wordId)
         {
             await _context.LikedWords.AddAsync(new LikedWord{
@@ -101,5 +111,16 @@ namespace word_of_the_day.Extensions
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteLikedWordAsync(string username, int wordId)
+        {
+            var likedWord = await _context.LikedWords.FirstOrDefaultAsync(word => word.WordId == wordId && word.Username == username);
+            if(likedWord == null)
+            {
+                return; 
+            }
+
+            _context.Remove(likedWord);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -6,10 +6,10 @@
               <p class="card-text">{{(word$ | async)?.Type}}</p>
               <p class="card-text">{{(word$ | async)?.Definition}}</p>
               <button type="button" class="btn btn-lg" (click)="onClickLike()">
-                <div *ngIf="liked == true">
+                <div *ngIf="(liked$ | async) == true">
                   <i class="bi bi-heart-fill"></i>
                 </div>
-                <div *ngIf="liked == false">
+                <div *ngIf="(liked$ | async) == false">
                   <i class="bi bi-heart"></i>
                 </div>
               </button>

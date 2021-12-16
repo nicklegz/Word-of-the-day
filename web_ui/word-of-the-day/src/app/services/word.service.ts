@@ -13,9 +13,14 @@ const baseWordApiUrl = `${environment.apiURL}/word`;
 
 export class WordService {
   private _listOfWords = new BehaviorSubject<Word[]>([]);
-  public listOfWords = this._listOfWords.asObservable();
+  public listOfWords$ = this._listOfWords.asObservable();
+
   private _listWordsViewName = new  BehaviorSubject<string>("");
-  public listWordsViewName = this._listWordsViewName.asObservable();
+  public listWordsViewName$ = this._listWordsViewName.asObservable();
+
+  private _isLikedWordOfTheDay = new BehaviorSubject<boolean>(false);
+  public isLikedWordOfTheDay$ = this._isLikedWordOfTheDay.asObservable();
+  public isLikedWordOfTheDay = this._isLikedWordOfTheDay;
 
   constructor(
     private http: HttpClient, 
@@ -33,15 +38,28 @@ export class WordService {
     return this.http.get<Word[]>(`${baseWordApiUrl}/liked-words/${this.auth.username}`);
   }
 
+  public getIsLikedWordOfTheDay(wordId: number){
+    return this.http.get<boolean>(`${baseWordApiUrl}/liked-words/${this.auth.username}/${wordId}`);
+  }
+
   public addLikedWord(wordId: number){
     return this.http.post(`${baseWordApiUrl}/liked-words/${this.auth.username}`, wordId);
   }
 
+  public deleteLikedWord(wordId: number){
+    return this.http.delete(`${baseWordApiUrl}/liked-words/${this.auth.username}/${wordId}`);
+  }
+
+  //manipulate the BehaviourSubjects
   public setListOfWords(words: Word[]){
     this._listOfWords.next(words);
   }
 
   public setListWordsViewName(viewname: string){
     this._listWordsViewName.next(viewname);
+  }
+
+  public setIsLikedWordOfTheDay(isLiked: boolean){
+    this._isLikedWordOfTheDay.next(isLiked);
   }
 }

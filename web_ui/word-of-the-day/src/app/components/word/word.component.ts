@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Word } from '../../interfaces/word.interface';
@@ -14,7 +15,7 @@ export class WordComponent implements OnInit {
   word$!: Observable<Word>;
   loading$!: Observable<boolean>;
   username: string = "";
-  liked: boolean = false;
+  liked$!: Observable<boolean>;
   isAuthenticated!: Observable<boolean>;
 
   constructor(
@@ -26,11 +27,34 @@ export class WordComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.loader.loading$;
+    this.loader.show();
     this.word$ = this.wordService.getWordOfTheDay();
-    this.word$.subscribe(() => this.loader.hide())
+
+    this.word$.subscribe((word) => {
+      this.wordService.getIsLikedWordOfTheDay(word.WordId).subscribe(isLiked =>{
+        this.wordService.setIsLikedWordOfTheDay(isLiked);
+        this.liked$ = this.wordService.isLikedWordOfTheDay$;
+        this.liked$.subscribe(() => this.loader.hide());
+      })
+    });
   }
 
   onClickLike(){
-    this.liked = !this.liked;
+    const liked = this.wordService.isLikedWordOfTheDay.value;
+    this.wordService.setIsLikedWordOfTheDay(!this.wordService.isLikedWordOfTheDay.value);
+
+    if(liked == true){
+      //delete liked word from database
+      this.word$.pipe(
+        concatMap((word) =>
+          this.wordService.deleteLikedWord(word.WordId)))
+        .subscribe()
+      return;
+    }
+
+    //add liked word to database
+    this.word$.pipe(
+      concatMap((word) =>
+      this.wordService.addLikedWord(word.WordId))).subscribe()
   }
 }
